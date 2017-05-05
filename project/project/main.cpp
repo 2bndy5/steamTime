@@ -3,6 +3,7 @@
 #include "getLibInfo.h"
 using namespace std;
 //Jerome was here
+//Kevin is here
 
 int main()
 {
