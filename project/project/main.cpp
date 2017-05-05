@@ -2,6 +2,9 @@
 #include <string>
 #include "getLibInfo.h"
 using namespace std;
+//Jerome was here
+
+//No way that I can see you typing
 
 int main()
 {
