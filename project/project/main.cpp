@@ -2,6 +2,7 @@
 #include <string>
 #include "getLibInfo.h"
 using namespace std;
+//Jerome was here
 
 int main()
 {
