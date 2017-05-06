@@ -42,10 +42,10 @@ error:
 	return bResults;
 }
 
-string getSteamID64()
+string getSteamID()
 {
 	string id;
-	cout << "Enter User Steam ID: ";
+	cout << "Enter Steam Username: ";
 	cin >> id;
 	return id;
 }

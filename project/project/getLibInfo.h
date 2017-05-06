@@ -10,7 +10,7 @@
 using namespace std;
 
 BOOL ReadWebPage(string &source, bool secure, const wchar_t *url, const wchar_t *verb);// source from http://stackoverflow.com/a/29552504
-string getSteamID64();
+string getSteamID();
 string convertSteamID(string &);// for converting steam ID_64 to steam username
 string getAccountNumber(string &uName);//user profile must have a custom URL set to user's steam ID for this to work correctly
 
