@@ -15,7 +15,7 @@ string convertSteamID(string &);// for converting steam ID_64 to steam username
 string getAccountNumber(string &uName);//user profile must have a custom URL set to user's steam ID for this to work correctly
 
 // 2nd attempt gets library info from profile web page **includes software appIDs**
-void extractAllApps(string &);
+void extractAllApps(string &, bool);
 
 // 1st attempt to implement steam web API, but doesn't return software appIDs
 void extractGames(bool, string &, bool);

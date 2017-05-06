@@ -61,8 +61,8 @@ string convertSteamID(string &ID_64){
 	ReadWebPage(src, false, L"steamprofile.co.uk", widestr.c_str());
 	//http://steamprofile.co.uk/steamid/2bndy5
 	if (src.find("content=\"Steam Player") < src.length()) {
-		int startCapture = src.find("content=\"Steam Player") + 23;
-		int endCapture = src.find(" With", startCapture);
+		size_t startCapture = src.find("content=\"Steam Player") + 23;
+		size_t endCapture = src.find(" With", startCapture);
 		uName = src.substr(startCapture, endCapture - startCapture);
 		cout << "username = " << uName << endl;
 	}
@@ -80,16 +80,16 @@ string getAccountNumber(string &uName){
 	ReadWebPage(src, false, L"steamprofile.co.uk", widestr.c_str());
 	//http://steamprofile.co.uk/steamid/2bndy5
 	if (src.find("Community ID:") > 0) {
-		int begin = src.find("Community ID:");
-		int startCapture = src.find("itemprop=\"title\">", begin) + 17;
-		int endCapture = src.find("</span>", startCapture);
+		size_t begin = src.find("Community ID:");
+		size_t startCapture = src.find("itemprop=\"title\">", begin) + 17;
+		size_t endCapture = src.find("</span>", startCapture);
 		id_64 = src.substr(startCapture, endCapture - startCapture);
 		cout << "id_64 = " << id_64 << endl;
 	}
 	return id_64;
 }
 
-void extractAllApps(string &uName)
+void extractAllApps(string &uName, bool logOutput)
 {
 	string src;
 	string subURL = "id/";
@@ -99,11 +99,18 @@ void extractAllApps(string &uName)
 	//http://steamcommunity.com/id/2bndy5/games/?tab=all
 	ReadWebPage(src, false, L"steamcommunity.com", widestr.c_str());
 	src = src.substr(src.find("rgGames = [") + 11, src.find("];", src.find("rgGames = [")) - src.find("rgGames = [") - 11);
-
+	ofstream fout;
+	if (logOutput)
+		fout.open(uName + " Library.txt");
 	int appCount = 0;
-	for (int i = 0; i < src.length(); i++) {
+	for (size_t i = 0; i < src.length(); i++) {
 		string appID = src.substr(src.find("appid\":", i) + 7, src.find(",\"", i) - src.find("appid\":", i) - 7);
 		string appName = src.substr(src.find("name\":\"", i) + 7, src.find("\",", i) - src.find("name\":\"", i) - 7);
+		size_t nextGame = src.find("},{", i);
+		size_t timeInfo = src.find("hours_forever", i);
+		string appTime = "";
+		if (timeInfo < nextGame && timeInfo < src.length())
+			appTime = src.substr(src.find("hours_forever\":\"", i) + 16, src.find("\",", src.find("hours_forever\":\"", i)) - src.find("hours_forever\":\"", i) - 16);
 		
 		//remove special characters like TM(superscript) and (R)
 		while (appName.find("\\u00ae") < appName.length())
@@ -112,14 +119,27 @@ void extractAllApps(string &uName)
 			appName.erase(appName.find("\\u2122"), 6);
 
 		i = src.find("},{", i);
-		cout << setw(6) << appID << " = " << appName << endl;
+		cout << setw(6) << appID << " = " << appName;
+		if (appTime == "")
+			cout << endl;
+		else
+			cout << " : " << appTime << " hour(s) played" << endl; 
 		appCount++;
-		if (i >= src.length()) {
-			break;
+		if (logOutput) {
+			fout << appID << "\t" << appName;
+			if (appTime == "")
+				fout << endl;
+			else
+				fout << "\t" << appTime << endl;
 		}
+		if (i >= src.length())
+			break;
 	}
 	cout << "Found " << appCount << " apps" << endl;
-
+	if (logOutput) {
+		fout << "Found " << appCount << " apps" << endl;
+		fout.close();
+	}
 }
 
 void extractGames(bool logOutput, string &id, bool indexFriends)
@@ -142,7 +162,7 @@ void extractGames(bool logOutput, string &id, bool indexFriends)
 		fout.open("Library List.txt");
 	unsigned int totalPlaytime = 0;
 	unsigned int gamesPlayed = 0;
-	for (int i = 0; i < src.length(); i++) {
+	for (size_t i = 0; i < src.length(); i++) {
 		if (src.find("appid", i) >= src.length())
 			break;
 		string appid = src.substr(src.find("appid", i) + 8, src.find(",", src.find("appid", i)) - src.find("appid", i) - 8);
@@ -190,7 +210,7 @@ void findFriends(bool logOutput, string &id, bool indexGames)
 	if (logOutput)
 		fout.open("Friends Parsed.txt");
 	int friendCount = 0;
-	for (int i = 0; i < src.length(); i++) {
+	for (size_t i = 0; i < src.length(); i++) {
 		if (src.find("</steamid>", i) >= src.length())
 			break;
 		string friendID_64 = src.substr(src.find("<steamid>", i) + 9, src.find("</steamid>", i) - src.find("<steamid>", i) - 9);
