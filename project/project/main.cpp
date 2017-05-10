@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
 		extractAllApps( user, true);
 	}
 	else {
-		extractGames(false, getAccountNumber(getSteamID()), true);
+		extractGames(false, getAccountNumber(getSteamID()), false);
 	}
 	return 0;
 }
