@@ -1,71 +1,57 @@
 #include "GameList.h"
+#include <iostream>
+using std::cout;
+using std::endl;
 
 GameList::GameList()
 {
-	root = new ListNode;
-	root->name= "NULL";
-	root->next = NULL;
+	for (int i = 0; i < MAX_SIZE; i++)
+		list[i].name = "NULL";
 }
 
 GameList::~GameList()
 {
-	makeEmpty();
-	delete root;
+//	delete[] list;
+}
+
+void GameList::print()
+{
+	for (int i = 0; i < MAX_SIZE; i++) {
+		if (list[i].name == "NULL")//break early
+			break;
+		cout << list[i].name << " : ";
+		cout << list[i].playTime << " minutes";
+		cout << endl;
+	}
 }
 
 void GameList::addNode(string n, unsigned int id, unsigned int t)
 {
-	ListNode* temp;
-	temp->name = n;
-	temp->appID = id;
-	temp->playTime = t;
-	temp->next = NULL;
-	bool success = false;
-	ListNode* curr = root;
+	ListNode temp;
+	temp.name = n;
+	temp.appID = id;
+	temp.playTime = t;
 	if (isEmpty()) {
-		delete root;
-		root = temp;
+		list[0] = temp;
 	}
-	while (!success)
-	{
-		if (curr->next == NULL) {
-			curr->next = temp;
-			success = true;
-		}
-		else if (curr->playTime < t && curr == root) {
-			temp->next = curr;
-			root = temp;
-			success = true;
-		}
-		else if (curr->next->playTime < t) {
-			temp->next = curr->next;
-			curr->next = temp;
-			success = true;
-		}
-		else
-			curr = curr->next;
-	}
+	else {
+		for (int i = 0; i <= MAX_SIZE - 1; i++)
+		{
+			if (list[i].name == "NULL") {
+				list[i] = temp;
+				break;
+			}
+			if (list[i].playTime < t) {
+				ListNode temp2 = list[i];
+				list[i] = temp;
+				temp = temp2;
+			}
+		}//end for 5 games
+	}//end else not empty
 }
-
-void GameList::makeEmpty()
-{
-	bool success = false;
-	ListNode* curr = root;
-	while(curr)
-	{
-		if (curr->next == NULL)
-			delete curr;
-		else {
-			ListNode* temp = curr;
-			curr = curr->next;
-			delete temp;
-		}
-	}
-}
-
 bool GameList::isEmpty()
 {
-	if (root->name == "NULL")
+	if (list[0].name == "NULL")
 		return true;
 	else
 		return false;

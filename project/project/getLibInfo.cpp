@@ -165,7 +165,7 @@ GameList* extractGames(bool logOutput, string &id)
 	//start parsing results
 	unsigned int totalPlaytime = 0;
 	unsigned int gamesPlayed = 0;
-	GameList games;
+	GameList* games = new GameList;
 	for (size_t i = 0; i < src.length(); i++) {
 		if (src.find("appid", i) >= src.length())
 			break;
@@ -173,11 +173,11 @@ GameList* extractGames(bool logOutput, string &id)
 		string gameTitle = src.substr(src.find("name", i) + 8, src.find("\",", i) - src.find("name", i) - 8);
 		unsigned int appTime = stoi(src.substr(src.find("playtime_forever", i) + 19, src.find("\",", i) - src.find("playtime_forever", i) - 19));
 		totalPlaytime += appTime;
-		games.addNode(gameTitle, appid, appTime);
 		if (logOutput)
 			fout << appid << " = " << gameTitle << " (" << appTime << " minutes)" << endl;
 		if (appTime > 0) {
 			cout << appid << " = " << gameTitle << " (" << appTime << " minutes)" << endl;
+			games->addNode(gameTitle, appid, appTime);
 			gamesPlayed++;
 		}
 		i = src.find("}", i);
@@ -194,7 +194,7 @@ GameList* extractGames(bool logOutput, string &id)
 	cout << "Total time spent playing = " << totalPlaytime << " minutes" << endl;
 	cout << "Average playtime per game played = " << (double)totalPlaytime / gamesPlayed << " minutes" << endl;
 
-	return &games;
+	return games;
 }
 
 void findFriends(bool logOutput, string &id, bool indexGames)

@@ -1,25 +1,3 @@
-﻿  BinaryTree.cpp
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(76): error C2143: syntax error: missing ';' before '}'
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(461): error C2131: expression did not evaluate to a constant
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(461): note: failure was caused by non-constant arguments or reference to a non-constant symbol
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(461): note: see usage of 'this'
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(462): error C2065: 'numberOfNode': undeclared identifier
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(470): error C2228: left of '.gameNameInTree' must have class/struct/union
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(470): note: type is 'treeNode *'
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(470): note: did you intend to use '->' instead?
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(472): error C2228: left of '.gamesTimeInTree' must have class/struct/union
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(472): note: type is 'treeNode *'
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(472): note: did you intend to use '->' instead?
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(482): error C2065: 'treeRoot': undeclared identifier
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(482): error C2228: left of '.numberOfNodes' must have class/struct/union
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(482): note: type is 'unknown-type'
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(484): error C2228: left of '.gameNameInTree' must have class/struct/union
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(484): note: type is 'treeNode *'
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(484): note: did you intend to use '->' instead?
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(486): error C2143: syntax error: missing ';' before 'if'
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(488): error C2228: left of '.gameTimeInTree' must have class/struct/union
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(488): note: type is 'treeNode *'
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(488): note: did you intend to use '->' instead?
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(494): error C2065: 'treeRoot': undeclared identifier
-c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(494): error C2228: left of '.numberOfNodes' must have class/struct/union
-  c:\users\ytreh\documents\github\steamtime\project\project\binarytree.cpp(494): note: type is 'unknown-type'
+﻿  GameList.cpp
+  project.vcxproj -> C:\Users\ytreh\Documents\GitHub\steamTime\project\x64\Debug\project.exe
+  project.vcxproj -> C:\Users\ytreh\Documents\GitHub\steamTime\project\x64\Debug\project.pdb (Full PDB)

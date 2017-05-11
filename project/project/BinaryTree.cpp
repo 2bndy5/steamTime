@@ -389,6 +389,7 @@ void TreeRootStruct::InOrderDisplayCall()
 * OUTPUT: none
 * RETURN VALUE: none
 ****************************************************************************************/
+/*
 void TreeRootStruct::MostPlayedGame(string gameWithMostTime, int & timeSpentPlayingGame)
 {
 	string gameNames[numberOfNodes * 5] = { "000" }; //ordered array of strings that will remain mostly empty strings
@@ -463,6 +464,7 @@ void TreeRootStruct::MostPlayedGame(string gameWithMostTime, int & timeSpentPlay
 
 	return;
 }
+*/
 
 /****************************************************************************************
 * FUNCTION: UserMenuToInputTextFileName()
@@ -472,6 +474,7 @@ void TreeRootStruct::MostPlayedGame(string gameWithMostTime, int & timeSpentPlay
 * OUTPUT: none
 * RETURN VALUE: none
 ****************************************************************************************/
+/*
 void UserMenuToInputTextFileName(string & inputTextFile)
 {
 	ifstream infile;
@@ -493,6 +496,7 @@ void UserMenuToInputTextFileName(string & inputTextFile)
 	infile.close();
 	return;
 }
+*/
 
 /****************************************************************************************
 * FUNCTION: ReadTextFile()
@@ -501,6 +505,7 @@ void UserMenuToInputTextFileName(string & inputTextFile)
 * OUTPUT: none
 * RETURN VALUE: memory allocation validation int.  Zero means all good in the hood
 ****************************************************************************************/
+/*
 int ReadTextFile(string inputTextFile, TreeRootStruct & treeRoot)
 {
 	int memoryAllocationValidation = 0;
@@ -546,6 +551,7 @@ int ReadTextFile(string inputTextFile, TreeRootStruct & treeRoot)
 	return memoryAllocationValidation;
 
 }
+*/
 
 /****************************************************************************************
 * FUNCTION: UserMenu2()
@@ -554,6 +560,7 @@ int ReadTextFile(string inputTextFile, TreeRootStruct & treeRoot)
 * OUTPUT: menu to user 
 * RETURN VALUE: none
 ****************************************************************************************/
+/*
 void UserMenu2(TreeRootStruct treeRoot)
 {
 	char choice = 'a';
@@ -660,3 +667,4 @@ void UserMenu2(TreeRootStruct treeRoot)
 
 	return;
 }
+*/

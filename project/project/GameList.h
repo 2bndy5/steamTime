@@ -7,18 +7,18 @@ struct ListNode {
 	string name;
 	unsigned int appID;
 	unsigned int playTime;
-	ListNode* next;
 };
 
 class GameList {
 public:
 	GameList();
 	~GameList();
+	void print();
 	void addNode(string, unsigned int, unsigned int);
 private:
-	void makeEmpty();
 	bool isEmpty();
-	ListNode* root;
+	static const int MAX_SIZE = 5;
+	ListNode list[MAX_SIZE];
 };
 
 #endif // !Game_H
