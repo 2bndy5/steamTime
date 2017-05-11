@@ -1,4 +1,18 @@
 #include "BinaryTree.h"
+treeNode * TreeRootStruct::findParent(int numberToDelete, treeNode * root)
+{
+	//first two if and else statements are redundant. Could probably lose them.
+	if (root->leftPointer->nodeNumber == numberToDelete)
+		return root;
+	else if (root->rightPointer->nodeNumber == numberToDelete)
+		return root;
+	else if (numberToDelete > root->nodeNumber)
+		return findParent(numberToDelete, root->leftPointer);
+	else if (numberToDelete < root->nodeNumber)
+		return findParent(numberToDelete, root->rightPointer);
+	else return NULL;//invalid input: could not find node
+}
+
 /***********************************************************************************
 * FUNCTION: CreateTree()
 * DESCRIPTION: Allocate a binary search tree structure, and initialize the root pointer in
@@ -87,7 +101,7 @@ bool TreeRootStruct::FindNode(int numberToFind)
 * RETURN VALUE: returns the created node with initialized pointers to NULL, or NULL is the
 * node could not be created.
 ****************************************************************************************/
-treeNode * TreeRootStruct::CreateNode(int numberToPlace)
+treeNode * TreeRootStruct::CreateNode(int numberToPlace, string steamID)
 {
 	treeNode * nodeCreated = new(nothrow) treeNode; 		//the 'nothrow' won't throw an exception if it fails, but will instead return NULL
 	if (nodeCreated == NULL)
@@ -97,6 +111,7 @@ treeNode * TreeRootStruct::CreateNode(int numberToPlace)
 	else
 	{
 		nodeCreated->nodeNumber = numberToPlace;
+		nodeCreated->steamUser = steamID;
 		nodeCreated->leftPointer = NULL;
 		nodeCreated->rightPointer = NULL;
 	}
@@ -111,59 +126,89 @@ treeNode * TreeRootStruct::CreateNode(int numberToPlace)
 * OUTPUT: none
 * RETURN VALUE: none
 ****************************************************************************************/
-bool TreeRootStruct::InsertNode(treeNode * nodeToInsert)
+bool TreeRootStruct::InsertNode(int id_64, string uName)
 {
-	treeNode * tempNodePointer = root;
 	bool inserted = false;
-
-	if (IsEmpty())
-	{
-		root = nodeToInsert;
-		inserted = true;
-		numberOfNodes++;
-	}
-
-	while (!inserted)
-	{
-		if (nodeToInsert->nodeNumber < tempNodePointer->nodeNumber)
+	//do a check for duplicates first
+	if (!FindNode(id_64)) {
+		treeNode * tempNodePointer = CreateNode(id_64, uName);
+		if (IsEmpty())
 		{
-			if (tempNodePointer->leftPointer == NULL)		//insert the node at this location
-			{
-				tempNodePointer->leftPointer = nodeToInsert;
-				inserted = true;
-				numberOfNodes++;
-				//cout << "L" << nodeToInsert->nodeNumber << endl;
-			}
-			else
-			{
-				tempNodePointer = tempNodePointer->leftPointer;
-				//cout << "L";
-			}
-		}
-		else if (nodeToInsert->nodeNumber > tempNodePointer->nodeNumber)
-		{
-			if (tempNodePointer->rightPointer == NULL)		//insert the node at this location
-			{
-				tempNodePointer->rightPointer = nodeToInsert;
-				inserted = true;
-				numberOfNodes++;
-				//cout << "R" << nodeToInsert->nodeNumber << endl;
-			}
-			else
-			{
-				tempNodePointer = tempNodePointer->rightPointer;
-				//cout << "R";
-			}
-		}
-		else//must be equal which is not allowed
-		{
-			cout << "\nError in InsertNode() due to equal numbers. Check FindNode()!\n";
+			root = tempNodePointer;
 			inserted = true;
+			numberOfNodes++;
 		}
-
-	}//end while(inserted == false)
-
+		else {
+			treeNode * curr = root;
+			while (!inserted)
+			{
+				if (curr->nodeNumber < tempNodePointer->nodeNumber)
+				{
+					if (curr->leftPointer == NULL)		//insert the node at this location
+					{
+						curr->leftPointer = tempNodePointer;
+						inserted = true;
+						numberOfNodes++;
+						//cout << "L" << nodeToInsert->nodeNumber << endl;
+					}
+					else
+					{
+						curr = curr->leftPointer;
+						//cout << "L";
+					}
+				}
+				else if (curr->nodeNumber > tempNodePointer->nodeNumber)
+				{
+					if (curr->rightPointer == NULL)		//insert the node at this location
+					{
+						curr->rightPointer = tempNodePointer;
+						inserted = true;
+						numberOfNodes++;
+						//cout << "R" << nodeToInsert->nodeNumber << endl;
+					}
+					else
+					{
+						curr = curr->rightPointer;
+						//cout << "R";
+					}
+				}
+			}//end while(inserted == false)
+		}//end else not empty
+	}//end if not a duplicate
 	return inserted;
+}
+
+bool TreeRootStruct::InsertNode(treeNode * tempPtr)
+{
+	if (tempPtr == NULL)
+		return true;//we passed an empty child: nothing to do
+	treeNode* curr = root;
+	bool success = false;
+	while (!success)
+	{
+		if (curr->nodeNumber > tempPtr->nodeNumber)
+		{
+			if (curr->leftPointer == NULL) {
+				curr->leftPointer = tempPtr;
+				success = true;
+			}
+			else
+				curr = curr->leftPointer;
+		}
+		else if (curr->nodeNumber < tempPtr->nodeNumber)
+		{
+			if (curr->rightPointer == NULL)
+			{
+				curr->rightPointer = tempPtr;
+				success = true;
+			}
+			else
+				curr = curr->rightPointer;
+		}
+		else
+			break;//somehow a duplicate slipped through: node will be lost
+	}
+	return success;
 }
 /****************************************************************************************
 * FUNCTION: DeleteNode()
@@ -175,158 +220,46 @@ bool TreeRootStruct::InsertNode(treeNode * nodeToInsert)
 ****************************************************************************************/
 void TreeRootStruct::DeleteNode(int numberToDelete) //this needs a helper function
 {
-	treeNode * tempNodePointer = root;
-	treeNode * tempNodePointerParent = NULL;
-	treeNode * childLeaf = NULL;//this is the leaf that will replace a two-child deleted node
-	treeNode * childLeafParent = NULL;
-
-	if (tempNodePointer->nodeNumber == numberToDelete && numberOfNodes == 1)//tree has only one node and after delete is empty
-	{
-		root = NULL;
-	}
-	else if (tempNodePointer->nodeNumber == numberToDelete)						//special case of deleting the root of the tree
-	{
-		if (tempNodePointer->leftPointer == NULL)
+	if (root->nodeNumber != numberToDelete) {
+		treeNode * Parent = findParent(numberToDelete, root);
+		if (Parent != NULL)//NULL means could not find node
 		{
-			root = tempNodePointer->rightPointer;
-		}
-		else if (tempNodePointer->rightPointer == NULL)
-		{
-			root = tempNodePointer->leftPointer;
-		}
-		else																	//find the rightmost child on the left leg... it's the new root
-		{
-			childLeaf = tempNodePointer->leftPointer;
-			while (childLeaf->rightPointer != NULL)
-			{
-				childLeafParent = childLeaf;
-				childLeaf = childLeaf->rightPointer;
+			if (numberToDelete > Parent->nodeNumber) {
+				treeNode* tempPtr = Parent->leftPointer->rightPointer;
+				Parent->leftPointer = Parent->leftPointer->leftPointer;
+				bool isinserted = InsertNode(tempPtr);
 			}
-			childLeafParent->rightPointer = NULL;
-			childLeafParent->leftPointer = childLeaf->leftPointer;
-			childLeaf->leftPointer = root->leftPointer;
-			childLeaf->rightPointer = root->rightPointer;
-			root = childLeaf;
+			else if (numberToDelete < Parent->nodeNumber) {
+				treeNode* tempPtr = Parent->rightPointer->leftPointer;
+				Parent->rightPointer = Parent->rightPointer->rightPointer;
+				bool isinserted = InsertNode(tempPtr);
+			}
 		}
 	}
-	else																		//node to delete is not the root node						
+	else //delete root node and restructure accordingly
 	{
-		while (tempNodePointer->nodeNumber != numberToDelete)
-		{
-			tempNodePointerParent = tempNodePointer;
-			if (tempNodePointer->nodeNumber > numberToDelete)
-			{
-				tempNodePointer = tempNodePointer->leftPointer;
-			}
-			else
-			{
-				tempNodePointer = tempNodePointer->rightPointer;
-			}
+		treeNode* tempRoot = root;
+		if (root->leftPointer != NULL && root->rightPointer == NULL) {
+			root = tempRoot->leftPointer;
+			root->rightPointer = tempRoot->leftPointer->rightPointer;
+			root->leftPointer = tempRoot->leftPointer->leftPointer;
 		}
-
-		if (tempNodePointer->leftPointer == NULL && tempNodePointer->rightPointer == NULL)				//node to delete is a leaf node
-		{
-			if (tempNodePointerParent->leftPointer != NULL)
-			{
-				if (tempNodePointerParent->leftPointer->nodeNumber == tempNodePointer->nodeNumber)		//leaf is a left leaf
-				{
-					tempNodePointerParent->leftPointer = NULL;
-				}
-			}
-
-			if (tempNodePointerParent->rightPointer != NULL)
-			{
-				if (tempNodePointerParent->rightPointer->nodeNumber == tempNodePointer->nodeNumber)		//leaf is a right leaf
-				{
-					tempNodePointerParent->rightPointer = NULL;
-				}
-			}
+		else if (root->leftPointer == NULL && root->rightPointer != NULL) {
+			root = tempRoot->rightPointer;
+			root->rightPointer = tempRoot->rightPointer->rightPointer;
+			root->leftPointer = tempRoot->rightPointer->leftPointer;
 		}
-		else if (tempNodePointer->leftPointer == NULL) 													//if node to delete has only one child (right pointer)
-		{
-			if (tempNodePointerParent->rightPointer != NULL)
-			{
-				if (tempNodePointerParent->rightPointer->nodeNumber == tempNodePointer->nodeNumber)		//child belongs to parent right leg
-				{
-					tempNodePointerParent->rightPointer = tempNodePointer->rightPointer;
-				}
-			}
-
-			if (tempNodePointerParent->leftPointer != NULL)
-			{
-				if (tempNodePointerParent->leftPointer->nodeNumber == tempNodePointer->nodeNumber)		//child belongs to parent left leg
-				{
-					tempNodePointerParent->leftPointer = tempNodePointer->rightPointer;
-				}
-			}
+		else if (root->leftPointer != NULL && root->rightPointer != NULL) {
+			//shift root to Left Pointer by defualt
+			root = tempRoot->leftPointer;
+			root->rightPointer = tempRoot->leftPointer->rightPointer;
+			root->leftPointer = tempRoot->leftPointer->leftPointer;
+			bool isInserted = InsertNode(tempRoot->rightPointer);
 		}
-		else if (tempNodePointer->rightPointer == NULL)													//if node to delete has only one child (left pointer)
-		{
-			if (tempNodePointerParent->rightPointer->nodeNumber == tempNodePointer->nodeNumber)			//child belongs to parent right leg
-			{
-				tempNodePointerParent->rightPointer = tempNodePointer->leftPointer;
-			}
-			else if (tempNodePointerParent->leftPointer->nodeNumber == tempNodePointer->nodeNumber)		//child belongs to parent left leg
-			{
-				tempNodePointerParent->leftPointer = tempNodePointer->leftPointer;
-			}
-			else
-			{
-				cout << "\nError in DeletePointer(), one child (right leg=NULL) node section!\n";
-			}
-		}
-		else if (tempNodePointer->rightPointer != NULL && tempNodePointer->leftPointer != NULL)			//node to delete has two children
-		{
-			if (tempNodePointerParent->leftPointer != NULL)
-			{
-				if (tempNodePointerParent->leftPointer->nodeNumber == tempNodePointer->nodeNumber)			//child belongs to parent's a left leg
-				{//since it's a left leg child, need LARGEST leaf to replace
-					childLeaf = tempNodePointer->rightPointer;
-					childLeafParent = tempNodePointer;
-
-					while (childLeaf->rightPointer != NULL)
-					{//when childLeaf->rightPointer == NULL, then that is the largest leaf
-						childLeafParent = childLeaf;
-						childLeaf = childLeaf->rightPointer;
-					}
-
-					tempNodePointerParent->leftPointer = childLeafParent->rightPointer;
-					childLeafParent->rightPointer = childLeaf->leftPointer;								//child leaf parent is ready to live without child
-
-					childLeaf->rightPointer = tempNodePointer->rightPointer;
-					childLeaf->leftPointer = tempNodePointer->leftPointer;
-				}
-			}
-			else if (tempNodePointerParent->rightPointer->nodeNumber == tempNodePointer->nodeNumber)		//child belongs to parent right leg
-			{//since it's a right leg child, need SMALLEST leaf to replace
-				childLeaf = tempNodePointer->leftPointer;
-
-				while (childLeaf->leftPointer != NULL)
-				{//when childLeaf->leftPointer == NULL, then that is the smallest leaf
-					childLeafParent = childLeaf;
-					childLeaf = childLeaf->leftPointer;
-				}
-
-				childLeafParent->leftPointer = childLeaf->rightPointer;								//child leaf parent is ready to live without child
-
-				tempNodePointerParent->leftPointer = childLeaf;
-				childLeaf->rightPointer = tempNodePointer->rightPointer;
-				childLeaf->leftPointer = tempNodePointer->leftPointer;
-			}
-			else
-			{
-				cout << "\nError in DeletePointer(), two children section!\n";
-			}
-		}
-		else
-		{
-			cout << "\nError in DeletePointer(), somewhere children pointers are not assigned!\n";
-		}
-	}
-
-	numberOfNodes--;
-	delete tempNodePointer;
-
+		else //both right and left nodes are NULL
+			delete root;
+		delete tempRoot;
+	}//end else delete root node
 	return;
 }
 

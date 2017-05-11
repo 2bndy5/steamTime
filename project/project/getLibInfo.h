@@ -3,7 +3,9 @@
 #pragma comment(lib, "winhttp.lib")//works only visual studio
 #include "windows.h"
 #include "Winhttp.h"
+#include "GameList.h"
 #include <string>
+#include <vector>
 #include <iostream>
 #include <iomanip>
 #include <fstream>
@@ -18,7 +20,7 @@ string getAccountNumber(string &uName);//user profile must have a custom URL set
 void extractAllApps(string &, bool);
 
 // 1st attempt to implement steam web API, but doesn't return software appIDs
-void extractGames(bool, string &, bool);
+GameList* extractGames(bool, string &);
 void findFriends(bool, string &, bool);
 
 #endif

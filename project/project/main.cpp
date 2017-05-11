@@ -10,7 +10,13 @@ int main(int argc, char *argv[])
 		extractAllApps( user, true);
 	}
 	else {
-		extractGames(false, getAccountNumber(getSteamID()), false);
+		string rootUser = getSteamID();
+		string rootSteamID_64 = getAccountNumber(rootUser);
+		GameList* gList = extractGames(false, rootSteamID_64);
+		
+		//	findFriends(logOutput, id, indexFriends);
+		findFriends(false, rootSteamID_64, false);
+
 	}
 	return 0;
 }
