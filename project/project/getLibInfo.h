@@ -10,7 +10,7 @@
 #include <fstream>
 using namespace std;
 
-class LibInfo
+class LibInfo : public BinaryTree
 {
 private:
 	BOOL ReadWebPage(string &source, bool secure, const wchar_t *url, const wchar_t *verb);// source from http://stackoverflow.com/a/29552504
