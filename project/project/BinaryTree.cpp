@@ -379,9 +379,9 @@ void BinaryTree::InOrderDisplay(treeNode * nodeWalker, int & i)
 void BinaryTree::InOrderDisplayCall()
 {
 	treeNode* nodeWalker = root;
-	int i = 0;															// if(i%10==0, then cout << endl
+	int i = 0;				// if(i%10==0, then cout << endl
 
-																		//cout << "\nNumber of nodes is " << treeRoot.numberOfNodes << endl;
+							//cout << "\nNumber of nodes is " << treeRoot.numberOfNodes << endl;
 
 	if (IsEmpty())
 	{
