@@ -116,6 +116,7 @@ treeNode * BinaryTree::CreateNode(int numberToPlace, string steamID, GameList* t
 	}
 	else
 	{
+		//create treeNode member attribute to store total overall time per player
 		nodeCreated->nodeNumber = numberToPlace;
 		nodeCreated->steamUser = steamID;
 		nodeCreated->top5 = topFive;
