@@ -1,6 +1,6 @@
 #include "getLibInfo.h"
 
-BOOL ReadWebPage(string &source, bool secure, const wchar_t *url, const wchar_t *verb)
+BOOL LibInfo::ReadWebPage(string &source, bool secure, const wchar_t *url, const wchar_t *verb)
 {
 	source = "error";
 	BOOL  bResults = FALSE;
@@ -69,7 +69,7 @@ string convertSteamID(string &ID_64){
 	return uName;
 }
 
-string getAccountNumber(string &uName){
+string LibInfo::getAccountNumber(string &uName){
 	string src = "";
 	string subURL = "steamid/";
 	subURL += uName;
@@ -89,7 +89,7 @@ string getAccountNumber(string &uName){
 	return id_64;
 }
 
-void extractAllApps(string &uName, bool logOutput)
+void LibInfo::extractAllApps(string &uName, bool logOutput)
 {
 	string src;
 	string subURL = "id/";
@@ -142,7 +142,7 @@ void extractAllApps(string &uName, bool logOutput)
 	}
 }
 
-GameList* extractGames(bool logOutput, string &id)
+GameList* LibInfo::extractGames(bool logOutput, string &id)
 {
 	string src;
 	//Web API key = 0B79957AE6E898D001F03E348355324C
@@ -240,7 +240,7 @@ GameList* extractGames(bool logOutput, string &id)
 // 	cout << "Friends found = " << friendCount << endl;
 // }
 
-void findFriends(bool logOutput, string &id, bool indexGames, BinaryTree *tree)
+void LibInfo::findFriends(bool logOutput, string &id, bool indexGames, BinaryTree *tree)
 {
 	string src;
 	string subURL = "ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=";
@@ -259,7 +259,7 @@ void findFriends(bool logOutput, string &id, bool indexGames, BinaryTree *tree)
 
 // This function will extract the games for each friend 
 // Inherit all functions into GetLibInfo Class and set the following function to private
-void useFriendList(bool logOutput, string &src, bool indexGames, BinaryTree *tree)
+void LibInfo::useFriendList(bool logOutput, string &src, bool indexGames, BinaryTree *tree)
 {
 	ofstream fout;
 	if (logOutput)
