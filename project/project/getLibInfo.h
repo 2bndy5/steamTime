@@ -1,6 +1,7 @@
 #ifndef getLibInfo_H
 #define getLibInfo_H
 #pragma comment(lib, "winhttp.lib")//works only visual studio
+#include "BinaryTree.h" // Inherit BinaryTree to use protected variables like numberOfNodes
 #include "windows.h"
 #include "Winhttp.h"
 #include "GameList.h"
