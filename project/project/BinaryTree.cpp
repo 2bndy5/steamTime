@@ -1,42 +1,50 @@
 #include "BinaryTree.h"
-treeNode * TreeRootStruct::findParent(int numberToDelete, treeNode * root)
+
+/************************************************************************
+* FUNCTION: findParent()
+* DESCRIPTION: Finds and returns parent node for node with matching
+* attribute that is passed. Uses lookahead idea to peek at children 
+* INPUT PARAMETERS: treeNode->nodeNumber and pointer to current parent
+* OUTPUT: none
+* RETURN VALUE: pointer to parent found or NULL if node doesn't exist
+*************************************************************************/
+treeNode * BinaryTree::findParent(int numberToDelete, treeNode * curr)
 {
 	//first two if and else statements are redundant. Could probably lose them.
-	if (root->leftPointer->nodeNumber == numberToDelete)
-		return root;
-	else if (root->rightPointer->nodeNumber == numberToDelete)
-		return root;
-	else if (numberToDelete > root->nodeNumber)
-		return findParent(numberToDelete, root->leftPointer);
-	else if (numberToDelete < root->nodeNumber)
-		return findParent(numberToDelete, root->rightPointer);
+	//May need to better define NULL base case for branch end points
+	if (curr->leftPointer->nodeNumber == numberToDelete)
+		return curr;
+	else if (curr->rightPointer->nodeNumber == numberToDelete)
+		return curr;
+	else if (numberToDelete > curr->nodeNumber)
+		return findParent(numberToDelete, curr->leftPointer);
+	else if (numberToDelete < curr->nodeNumber)
+		return findParent(numberToDelete, curr->rightPointer);
 	else return NULL;//invalid input: could not find node
 }
 
-/***********************************************************************************
-* FUNCTION: CreateTree()
-* DESCRIPTION: Allocate a binary search tree structure, and initialize the root pointer in
-* it to NULL and the count to 0, to indicate an empty tree. 
-* INPUT PARAMETERS: none
+/************************************************************************
+* FUNCTION: BinaryTree()
+* DESCRIPTION: constructor for binary search tree structure, and 
+* initialize the root pointer to NULL and the Node count to 0
+* INPUT PARAMETERS: N/A
 * OUTPUT: none
-* RETURN VALUE: Returns a pointer to the root node of the new binary search tree 
-* structure.
-************************************************************************************/
-TreeRootStruct::TreeRootStruct()
+* RETURN VALUE: N/A
+*************************************************************************/
+BinaryTree::BinaryTree()
 {
-	TreeRootStruct treeRoot;
-	treeRoot.root = NULL;
-	treeRoot.numberOfNodes = 0;
+	root = NULL;
+	numberOfNodes = 0;
 }
 
-/********************************************************************************
+/************************************************************************
 * FUNCTION: IsEmpty()
-* DESCRIPTION: looks at a BST structure and determines whether it is empty or not
-* INPUT PARAMETERS: node of the tree root
+* DESCRIPTION: determines whether root node is empty or not
+* INPUT PARAMETERS: none
 * OUTPUT: none
-* RETURN VALUE: returns true if binary search tree is empty, false otherwise
-********************************************************************************/
-bool TreeRootStruct::IsEmpty()
+* RETURN VALUE: returns true if root is empty, false otherwise
+*************************************************************************/
+bool BinaryTree::IsEmpty()
 {
 	if (root == NULL)
 		return true;
@@ -44,20 +52,18 @@ bool TreeRootStruct::IsEmpty()
 		return false;
 }
 
-/****************************************************************************************
+/************************************************************************
 * FUNCTION: FindNode()
 * DESCRIPTION: //searches for a value within a binary search tree. Passes back a flag 
 * indicating if the value was found and a pointer to a node. 
 *	If the value was found, the pointer will point to the node containing the value. 
 *	If the value was not found, the pointer will point to the last node searched before 
 *	determining that the value could not be found (or NULL if the tree was empty).
-* INPUT PARAMETERS: root node, number to be found and a dummy node (dummy node will either
-* become the parent node or the node if found).
+* INPUT PARAMETERS: treeNode->nodeNumber to be found
 * OUTPUT: none
-* RETURN VALUE: Returns a true/false (found/not founter) bool and pointer to the node 
-* (dummy node) or the parent of where the node would be if it was in the tree
-****************************************************************************************/
-bool TreeRootStruct::FindNode(int numberToFind)
+* RETURN VALUE: Returns a true/false (found/not found) boolean
+*************************************************************************/
+bool BinaryTree::FindNode(int numberToFind)
 {
 	treeNode* nodeFinder = root;
 	bool found = false,							//number has/has not been found (yet)
@@ -92,16 +98,16 @@ bool TreeRootStruct::FindNode(int numberToFind)
 	return found;
 }
 
-/****************************************************************************************
+/************************************************************************
 * FUNCTION: CreateNode()
-* DESCRIPTION: allocate and fills new node. Passes back pointer to new node, or NULL if 
-* node could not be allocated.
-* INPUT PARAMETERS: number for which a node needs to be created
+* DESCRIPTION: allocate and fills new node. Passes back pointer to new 
+* node, or NULL if node could not be allocated.
+* INPUT PARAMETERS: New node's attributes
 * OUTPUT: none
-* RETURN VALUE: returns the created node with initialized pointers to NULL, or NULL is the
-* node could not be created.
-****************************************************************************************/
-treeNode * TreeRootStruct::CreateNode(int numberToPlace, string steamID)
+* RETURN VALUE: returns the created node with initialized pointers to 
+* NULL, or NULL is the node could not be created.
+*************************************************************************/
+treeNode * BinaryTree::CreateNode(int numberToPlace, string steamID, GameList* topFive)
 {
 	treeNode * nodeCreated = new(nothrow) treeNode; 		//the 'nothrow' won't throw an exception if it fails, but will instead return NULL
 	if (nodeCreated == NULL)
@@ -112,26 +118,27 @@ treeNode * TreeRootStruct::CreateNode(int numberToPlace, string steamID)
 	{
 		nodeCreated->nodeNumber = numberToPlace;
 		nodeCreated->steamUser = steamID;
+		nodeCreated->top5 = topFive;
 		nodeCreated->leftPointer = NULL;
 		nodeCreated->rightPointer = NULL;
 	}
 
 	return nodeCreated;
 }
-/****************************************************************************************
+/************************************************************************
 * FUNCTION: InsertNode()
 * DESCRIPTION: inserts a new node into the correct location within a binary search tree.
-* INPUT PARAMETERS: created node with NULL pointer and a number.  This is the node that 
-* will be inserted into the BSt
+* INPUT PARAMETERS: new node's attributes
 * OUTPUT: none
-* RETURN VALUE: none
-****************************************************************************************/
-bool TreeRootStruct::InsertNode(int id_64, string uName)
+* RETURN VALUE: true if successful, otherwise false if duplicate exists
+*************************************************************************/
+bool BinaryTree::InsertNode(int id_64, string uName, GameList* gList)
 {
 	bool inserted = false;
 	//do a check for duplicates first
 	if (!FindNode(id_64)) {
-		treeNode * tempNodePointer = CreateNode(id_64, uName);
+		treeNode * tempNodePointer = CreateNode(id_64, uName, gList);
+		//insert memory error handling here
 		if (IsEmpty())
 		{
 			root = tempNodePointer;
@@ -178,7 +185,17 @@ bool TreeRootStruct::InsertNode(int id_64, string uName)
 	return inserted;
 }
 
-bool TreeRootStruct::InsertNode(treeNode * tempPtr)
+/************************************************************************
+* FUNCTION: InsertNode()
+* INPUT: temporary pointer to node overflow from removing said node's 
+* parent
+* OUTPUT: none
+* RETURN VALUE: returns true when done or false if node already exists
+* (shouldn't happen as public insertNode() checks for duplicates)
+* DESCRIPTION: Private helper function to deleteNode(). This will traverse
+* binary tree and insert specified node accordingly
+************************************************************************/
+bool BinaryTree::InsertNode(treeNode * tempPtr)
 {
 	if (tempPtr == NULL)
 		return true;//we passed an empty child: nothing to do
@@ -210,15 +227,15 @@ bool TreeRootStruct::InsertNode(treeNode * tempPtr)
 	}
 	return success;
 }
-/****************************************************************************************
+/************************************************************************
 * FUNCTION: DeleteNode()
 * DESCRIPTION: deletes a node from the binary search tree.
-* INPUT PARAMETERS: number to delete (already determined that it is in the tree, node 
-* needs to be found), tree root node
+* INPUT PARAMETERS: treeNode->nodeNumber to delete ( checks if node 
+* exists via private findParent() )
 * OUTPUT: none
 * RETURN VALUE: none
-****************************************************************************************/
-void TreeRootStruct::DeleteNode(int numberToDelete) //this needs a helper function
+*************************************************************************/
+void BinaryTree::DeleteNode(int numberToDelete) //this needs a helper function
 {
 	if (root->nodeNumber != numberToDelete) {
 		treeNode * Parent = findParent(numberToDelete, root);
@@ -263,15 +280,15 @@ void TreeRootStruct::DeleteNode(int numberToDelete) //this needs a helper functi
 	return;
 }
 
-/***************************************************************************************
+/************************************************************************
 * FUNCTION: FreeNodes()
 * DESCRIPTION: recursively de-allocates all dynamic memory allocated to nodes in the 
 * binary search tree.
 * INPUT PARAMETERS: node that points to the root node
 * OUTPUT: none
 * RETURN VALUE: none
-***************************************************************************************/
-void TreeRootStruct::FreeNodes(treeNode * nodeWalker)
+*************************************************************************/
+void BinaryTree::FreeNodes(treeNode * nodeWalker)
 {
 	if (nodeWalker->leftPointer == NULL && nodeWalker->rightPointer == NULL)		//is a leaf node
 	{
@@ -309,32 +326,31 @@ void TreeRootStruct::FreeNodes(treeNode * nodeWalker)
 	return;
 }
 
-/****************************************************************************************
+/************************************************************************
 * FUNCTION: DestroyTree()
 * DESCRIPTION: Calls FreeNodes() to delete all the tree nodes and then destroys the root 
 * pointers 
-* INPUT PARAMETERS: pointer to the root node
+* INPUT PARAMETERS: N/A
 * OUTPUT: none
-* RETURN VALUE: none
-****************************************************************************************/
-TreeRootStruct::~TreeRootStruct()
+* RETURN VALUE: N/A
+*************************************************************************/
+BinaryTree::~BinaryTree()
 {
-	treeNode* nodeWalker = root;
-	FreeNodes(nodeWalker);
+	FreeNodes(root);
 	numberOfNodes = 0;
 	root = NULL;
 	return;
 }
 
-/****************************************************************************************
+/************************************************************************
 * FUNCTION: InOrderDisplay()
 * DESCRIPTION: traverses the BST and outputs the numbers in order (lowest to highest)
 * INPUT PARAMETERS: nodeWalker node pointer to tree root, and counter for carriage return 
 * for output
 * OUTPUT: outputs all the BST numbers to screen in order
 * RETURN VALUE: none
-****************************************************************************************/
-void TreeRootStruct::InOrderDisplay(treeNode * nodeWalker, int & i)
+*************************************************************************/
+void BinaryTree::InOrderDisplay(treeNode * nodeWalker, int & i)
 {
 	//using Depth First traversal, will walk from left (to the leaves and back) to right of the tree
 
@@ -352,15 +368,15 @@ void TreeRootStruct::InOrderDisplay(treeNode * nodeWalker, int & i)
 	return;
 }
 
-/****************************************************************************************
+/************************************************************************
 * FUNCTION: InOrderDisplayCall()
 * DESCRIPTION: initializes nodeWalker and an int for i%10==0 endl for good output, then 
 * calls the recursive function InOrderDisplay()
-* INPUT PARAMETERS: pointer to root node
+* INPUT PARAMETERS: none
 * OUTPUT: none
 * RETURN VALUE: none
-****************************************************************************************/
-void TreeRootStruct::InOrderDisplayCall()
+*************************************************************************/
+void BinaryTree::InOrderDisplayCall()
 {
 	treeNode* nodeWalker = root;
 	int i = 0;															// if(i%10==0, then cout << endl
@@ -381,16 +397,16 @@ void TreeRootStruct::InOrderDisplayCall()
 
 }
 
-/****************************************************************************************
+/************************************************************************
 * FUNCTION: MostPlayedGame()
 * DESCRIPTION: traverses the tree and counts how much time is spent playing each game.  
 * Game with most hours spent is returned
 * INPUT PARAMETERS: root pointer
 * OUTPUT: none
 * RETURN VALUE: none
-****************************************************************************************/
+*************************************************************************/
 /*
-void TreeRootStruct::MostPlayedGame(string gameWithMostTime, int & timeSpentPlayingGame)
+void BinaryTree::MostPlayedGame(string gameWithMostTime, int & timeSpentPlayingGame)
 {
 	string gameNames[numberOfNodes * 5] = { "000" }; //ordered array of strings that will remain mostly empty strings
 	int gameTimes[numberOfNode * 5] = { -1 };
@@ -466,14 +482,14 @@ void TreeRootStruct::MostPlayedGame(string gameWithMostTime, int & timeSpentPlay
 }
 */
 
-/****************************************************************************************
+/************************************************************************
 * FUNCTION: UserMenuToInputTextFileName()
 * DESCRIPTION: menu for user to imput string file. 
 * INPUT PARAMETERS: blank string for the name of the inputTextFile name.  Does error 
 * checking to see if file exists before return
 * OUTPUT: none
 * RETURN VALUE: none
-****************************************************************************************/
+*************************************************************************/
 /*
 void UserMenuToInputTextFileName(string & inputTextFile)
 {
@@ -498,13 +514,13 @@ void UserMenuToInputTextFileName(string & inputTextFile)
 }
 */
 
-/****************************************************************************************
+/************************************************************************
 * FUNCTION: ReadTextFile()
 * DESCRIPTION: reads the input text file, calls the relevant functions to build the BST
 * INPUT PARAMETERS: string with the name of the text file and root node pointer
 * OUTPUT: none
 * RETURN VALUE: memory allocation validation int.  Zero means all good in the hood
-****************************************************************************************/
+*************************************************************************/
 /*
 int ReadTextFile(string inputTextFile, TreeRootStruct & treeRoot)
 {
@@ -553,13 +569,13 @@ int ReadTextFile(string inputTextFile, TreeRootStruct & treeRoot)
 }
 */
 
-/****************************************************************************************
+/************************************************************************
 * FUNCTION: UserMenu2()
 * DESCRIPTION: offers a menu of options to the user and calls functions until exit
 * INPUT PARAMETERS: root pointer
 * OUTPUT: menu to user 
 * RETURN VALUE: none
-****************************************************************************************/
+*************************************************************************/
 /*
 void UserMenu2(TreeRootStruct treeRoot)
 {

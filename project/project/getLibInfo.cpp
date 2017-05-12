@@ -145,6 +145,7 @@ void extractAllApps(string &uName, bool logOutput)
 GameList* extractGames(bool logOutput, string &id)
 {
 	string src;
+	//Web API key = 0B79957AE6E898D001F03E348355324C
 	string subURL = "IPlayerService/GetOwnedGames/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=";
 	subURL += id;
 	subURL += "&include_appinfo=1&format=csv";

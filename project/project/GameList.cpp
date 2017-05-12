@@ -9,10 +9,7 @@ GameList::GameList()
 		list[i].name = "NULL";
 }
 
-GameList::~GameList()
-{
-//	delete[] list;
-}
+GameList::~GameList(){}
 
 void GameList::print()
 {

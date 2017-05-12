@@ -13,7 +13,7 @@
 #include <iomanip>
 #include <string>
 #include <fstream>
-
+#include "GameList.h"
 using namespace std;
 
 //node structure for the binary search tree
@@ -23,38 +23,43 @@ struct treeNode
 	treeNode * rightPointer = NULL;
 	int nodeNumber;
 	string steamUser;
-
-	string gameNameInTree[5];
-	int gameTimeInTree[5];
+	GameList* top5;//seperate class holds most played games
 };
 
 //root pointer for the binary search tree.  Number of nodes is contained the int numberofNodes
-class TreeRootStruct
+class BinaryTree
 {
 private:
 	treeNode * root;
 	int numberOfNodes;
 	treeNode* findParent(int numberToDelete, treeNode* root);//delete node helper function
-
-	//function declarations
-	TreeRootStruct(); 								//creates a pointer to the root of the tree and a counter for number of nodes in tree
-	bool IsEmpty(); 						//returns true if binary search tree is empty, false otherwise
-	bool FindNode(int numberToFind);//finds a node, or NULL if tree is empty, or would-be parent node if node doesn't exist
-	treeNode* CreateNode(int numberToPlace, string steamID);					// – allocate and fills new node. Passes back pointer to new node, or NULL if node could not be allocated.
-	bool InsertNode(int id_64, string uName); //– inserts a new node into the correct location within a binary search tree.
 	bool InsertNode(treeNode* tempPtr);//overload to redistribute excess node after deletion
-	void DeleteNode(int numberToDelete);// – deletes a node from the binary search tree.
-	void FreeNodes(treeNode* nodeWalker);// – recursively de-allocates all dynamic memory allocated to nodes in the binary search tree.
-	~TreeRootStruct();// – de-allocates all dynamic memory allocated for the binary search tree.
-	void InOrderDisplay(treeNode* nodeWalker, int &i);// – neatly displays all integers in the list in sorted order, using a recursive, in-order traversal.
+public:
+	//creates a pointer to the root of the tree and a counter for number of nodes in tree
+	BinaryTree(); 	
+	//returns true if binary search tree is empty, false otherwise
+	bool IsEmpty(); 
+	//finds a node, or NULL if tree is empty, or would-be parent node if node doesn't exist
+	bool FindNode(int numberToFind);
+	// allocate and fills new node. Passes back pointer to new node, or NULL if node could not be allocated.
+	treeNode* CreateNode(int numberToPlace, string steamID, GameList* topFive);
+	// inserts a new node into the correct location within a binary search tree.
+	bool InsertNode(int id_64, string uName, GameList* gList); 
+	// deletes a node from the binary search tree.
+	void DeleteNode(int numberToDelete);
+	// recursively de-allocates all dynamic memory allocated to nodes in the binary search tree.
+	void FreeNodes(treeNode* nodeWalker);
+	// de-allocates all dynamic memory allocated for the binary search tree.
+	~BinaryTree();
+	// neatly displays all integers in the list in sorted order, using a recursive, in-order traversal.
+	void InOrderDisplay(treeNode* nodeWalker, int &i);
 	void InOrderDisplayCall();//calls InOrderDisplay if necessary
-	void MostPlayedGame(string gameWithMostTime, int  &timeSpentPlayingGame);
-
-	//end function declarations
+	//void MostPlayedGame(string gameWithMostTime, int  &timeSpentPlayingGame);
 };
-
+/*
 void UserMenuToInputTextFileName(string & inputTextFile);	//menu for user to imput string file.  Returns when correct
-int ReadTextFile(string inputTextFile, TreeRootStruct& treeRoot);
-void UserMenu2(TreeRootStruct treeRoot);
+int ReadTextFile(string inputTextFile, BinaryTree& treeRoot);
+void UserMenu2(BinaryTree treeRoot);
+*/
 
 #endif
