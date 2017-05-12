@@ -1,5 +1,5 @@
 # steamTime
-Project to index an compare users' steam games' play times
+Project to index an compare users' steam games' playtimes
 
 WILL ONLY WORK UNDER WINDOWS!! or at least until i figure out how to include libcurl (documentation for windows didn't work)
 	

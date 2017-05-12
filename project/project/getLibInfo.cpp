@@ -42,10 +42,10 @@ error:
 	return bResults;
 }
 
-string getSteamID64()
+string getSteamID()
 {
 	string id;
-	cout << "Enter User Steam ID: ";
+	cout << "Enter Steam Username: ";
 	cin >> id;
 	return id;
 }
@@ -142,9 +142,10 @@ void extractAllApps(string &uName, bool logOutput)
 	}
 }
 
-void extractGames(bool logOutput, string &id, bool indexFriends)
+GameList* extractGames(bool logOutput, string &id)
 {
 	string src;
+	//Web API key = 0B79957AE6E898D001F03E348355324C
 	string subURL = "IPlayerService/GetOwnedGames/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=";
 	subURL += id;
 	subURL += "&include_appinfo=1&format=csv";
@@ -160,12 +161,16 @@ void extractGames(bool logOutput, string &id, bool indexFriends)
 	ofstream fout; 
 	if (logOutput)
 		fout.open("Library List.txt");
+
+
+	//start parsing results
 	unsigned int totalPlaytime = 0;
 	unsigned int gamesPlayed = 0;
+	GameList* games = new GameList;
 	for (size_t i = 0; i < src.length(); i++) {
 		if (src.find("appid", i) >= src.length())
 			break;
-		string appid = src.substr(src.find("appid", i) + 8, src.find(",", src.find("appid", i)) - src.find("appid", i) - 8);
+		unsigned int appid = stoi(src.substr(src.find("appid", i) + 8, src.find(",", src.find("appid", i)) - src.find("appid", i) - 8));
 		string gameTitle = src.substr(src.find("name", i) + 8, src.find("\",", i) - src.find("name", i) - 8);
 		unsigned int appTime = stoi(src.substr(src.find("playtime_forever", i) + 19, src.find("\",", i) - src.find("playtime_forever", i) - 19));
 		totalPlaytime += appTime;
@@ -173,6 +178,7 @@ void extractGames(bool logOutput, string &id, bool indexFriends)
 			fout << appid << " = " << gameTitle << " (" << appTime << " minutes)" << endl;
 		if (appTime > 0) {
 			cout << appid << " = " << gameTitle << " (" << appTime << " minutes)" << endl;
+			games->addNode(gameTitle, appid, appTime);
 			gamesPlayed++;
 		}
 		i = src.find("}", i);
@@ -189,7 +195,7 @@ void extractGames(bool logOutput, string &id, bool indexFriends)
 	cout << "Total time spent playing = " << totalPlaytime << " minutes" << endl;
 	cout << "Average playtime per game played = " << (double)totalPlaytime / gamesPlayed << " minutes" << endl;
 
-	findFriends(logOutput, id, indexFriends);
+	return games;
 }
 
 void findFriends(bool logOutput, string &id, bool indexGames)
@@ -220,7 +226,7 @@ void findFriends(bool logOutput, string &id, bool indexGames)
 			fout << friendCount << ". " << friendID_64 << " = " << friendUsername << endl;
 		cout << friendCount << ". " << friendID_64 << " = " << friendUsername << endl;
 		if (indexGames)
-			extractGames(logOutput, friendID_64, false);
+			GameList* games = extractGames(logOutput, friendID_64);
 		i = src.find("</steamid>", i);
 	}
 	if (logOutput) {
