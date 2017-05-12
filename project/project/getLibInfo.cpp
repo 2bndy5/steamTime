@@ -266,29 +266,29 @@ void useFriendList(bool logOutput, string &src, bool indexGames, BinaryTree *tre
 		fout.open("Friends Parsed.txt");
 
 	for (size_t i = 0; i < src.length(); i++) 
-  {
+  	{
 		if (src.find("</steamid>", i) >= src.length())
 			break;
 		
 		string friendID_64 = src.substr(src.find("<steamid>", i) + 9, src.find("</steamid>", i) - src.find("<steamid>", i) - 9);
 		string friendUsername = convertSteamID(friendID_64);
 		
-		if (logOutput) // Friend Count == i+1 since loop control variable starts at 0
-			fout << (i+1) << ". " << friendID_64 << " = " << friendUsername << endl;
-		cout << (i+1) << ". " << friendID_64 << " = " << friendUsername << endl;
+		if (logOutput) 
+			fout << friendID_64 << " = " << friendUsername << endl;
+		cout << friendID_64 << " = " << friendUsername << endl;
 		
-		// Remove maxChildren checker after debug
-		if (indexGames && maxChildren < 10)
+		// Using max global variable to cap the tree
+		if (indexGames && numberOfNodes < MAX_TREE_SIZE) // Once max size is reached it will stop inserting nodes
 		{
-			maxChildren++;
-			tree->InsertNode(stoi(friendID_64), friendUsername, extractGames(logOutput, friendID_64, true)); // needs to be true to run its own if statement in the following iteration
+			tree->InsertNode(stoi(friendID_64), friendUsername, extractGames(logOutput, friendID_64, false)); // needs to be true to run its own if statement in the following iteration
 		}
 		
 		i = src.find("</steamid>", i);
 	}
-	if (logOutput) {
-		fout << "Friends found = " << src.length() << endl; // scr.length() == Friend Count
+	// Output the size of the tree - 1 because not counting root
+	if (logOutput) { // NEEDS .getSize for tree
+		fout << "Friends found = " << tree.getSize() -1 << endl; // scr.length() == Friend Count
 		fout.close();
 	}
-	else cout << "Friends found = " << src.length() << endl;
+	else cout << "Friends found = " << tree.getSize() -1 << endl;
 }
