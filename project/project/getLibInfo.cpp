@@ -278,7 +278,7 @@ void useFriendList(bool logOutput, string &src, bool indexGames, BinaryTree *tre
 		cout << friendID_64 << " = " << friendUsername << endl;
 		
 		// Using max global variable to cap the tree
-		if (indexGames && numberOfNodes < MAX_TREE_SIZE)
+		if (indexGames && numberOfNodes < MAX_TREE_SIZE) // Once max size is reached it will stop inserting nodes
 		{
 			tree->InsertNode(stoi(friendID_64), friendUsername, extractGames(logOutput, friendID_64, false)); // needs to be true to run its own if statement in the following iteration
 		}
