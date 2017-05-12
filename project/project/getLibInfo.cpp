@@ -172,7 +172,49 @@ void extractGames(bool logOutput, string &id, bool indexFriends)
 	findFriends(logOutput, id, indexFriends);
 }
 
-void findFriends(bool logOutput, string &id, bool indexGames)
+// This is to be split into two functions the first will be to find friends and then the second one will use the friend list and call
+// extract games for each friend. The original is directly underneath this comment.
+
+// void findFriends(bool logOutput, string &id, bool indexGames)
+// {
+// 	string src;
+// 	string subURL = "ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=";
+// 	subURL += getAccountNumber(id);
+// 	subURL += "&relationship=all&format=xml";
+// 	wstring widestr = wstring(subURL.begin(), subURL.end());
+// 	ReadWebPage(src, false, L"api.steampowered.com", widestr.c_str());
+// 	//http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=76561198054478758&relationship=all&format=xml
+// 	if (logOutput) {
+// 		ofstream log("friends.xml");
+// 		log << src;
+// 		log.close();
+// 	}
+	
+// 	ofstream fout;
+// 	if (logOutput)
+// 		fout.open("Friends Parsed.txt");
+// 	int friendCount = 0;
+// 	for (int i = 0; i < src.length(); i++) {
+// 		if (src.find("</steamid>", i) >= src.length())
+// 			break;
+// 		string friendID_64 = src.substr(src.find("<steamid>", i) + 9, src.find("</steamid>", i) - src.find("<steamid>", i) - 9);
+// 		string friendUsername = convertSteamID(friendID_64);
+// 		friendCount++;
+// 		if (logOutput)
+// 			fout << friendCount << ". " << friendID_64 << " = " << friendUsername << endl;
+// 		cout << friendCount << ". " << friendID_64 << " = " << friendUsername << endl;
+// 		if (indexGames)
+// 			extractGames(logOutput, friendID_64, false);
+// 		i = src.find("</steamid>", i);
+// 	}
+// 	if (logOutput) {
+// 		fout << "Friends found = " << friendCount << endl;
+// 		fout.close();
+// 	}
+// 	cout << "Friends found = " << friendCount << endl;
+// }
+
+void findFriends(bool logOutput, string &id, bool indexGames, BinaryTree *tree)
 {
 	string src;
 	string subURL = "ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=";
@@ -186,26 +228,40 @@ void findFriends(bool logOutput, string &id, bool indexGames)
 		log << src;
 		log.close();
 	}
+	useFriendList(logOutput, src, indexGames, tree);
+}
+
+// This function will extract the games for each friend 
+// Inherit all functions into GetLibInfo Class and set the following function to private
+void useFriendList(bool logOutput, string &src, bool indexGames, BinaryTree *tree)
+{
 	ofstream fout;
 	if (logOutput)
 		fout.open("Friends Parsed.txt");
-	int friendCount = 0;
+	
 	for (int i = 0; i < src.length(); i++) {
 		if (src.find("</steamid>", i) >= src.length())
 			break;
+		
 		string friendID_64 = src.substr(src.find("<steamid>", i) + 9, src.find("</steamid>", i) - src.find("<steamid>", i) - 9);
 		string friendUsername = convertSteamID(friendID_64);
-		friendCount++;
-		if (logOutput)
-			fout << friendCount << ". " << friendID_64 << " = " << friendUsername << endl;
-		cout << friendCount << ". " << friendID_64 << " = " << friendUsername << endl;
-		if (indexGames)
-			extractGames(logOutput, friendID_64, false);
+		
+		if (logOutput) // Friend Count == i+1 since loop control variable starts at 0
+			fout << (i+1) << ". " << friendID_64 << " = " << friendUsername << endl;
+		cout << (i+1) << ". " << friendID_64 << " = " << friendUsername << endl;
+		
+		// Remove maxChildren checker after debug
+		if (indexGames && maxChildren < 10)
+		{
+			maxChildren++;
+			tree->InsertNode(stoi(friendID_64), friendUsername, extractGames(logOutput, friendID_64, true)); // needs to be true to run its own if statement in the following iteration
+		}
+		
 		i = src.find("</steamid>", i);
 	}
 	if (logOutput) {
-		fout << "Friends found = " << friendCount << endl;
+		fout << "Friends found = " << src.length() << endl; // scr.length() == Friend Count
 		fout.close();
 	}
-	cout << "Friends found = " << friendCount << endl;
+	else cout << "Friends found = " << src.length() << endl;
 }
