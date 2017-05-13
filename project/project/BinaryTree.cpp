@@ -24,20 +24,6 @@ treeNode * BinaryTree::findParent(int numberToDelete, treeNode * curr)
 }
 
 /************************************************************************
-* FUNCTION: BinaryTree()
-* DESCRIPTION: constructor for binary search tree structure, and 
-* initialize the root pointer to NULL and the Node count to 0
-* INPUT PARAMETERS: N/A
-* OUTPUT: none
-* RETURN VALUE: N/A
-*************************************************************************/
-BinaryTree::BinaryTree()
-{
-	root = NULL;
-	numberOfNodes = 0;
-}
-
-/************************************************************************
 * FUNCTION: IsEmpty()
 * DESCRIPTION: determines whether root node is empty or not
 * INPUT PARAMETERS: none
@@ -236,7 +222,7 @@ bool BinaryTree::InsertNode(treeNode * tempPtr)
 * OUTPUT: none
 * RETURN VALUE: none
 *************************************************************************/
-void BinaryTree::DeleteNode(int numberToDelete) //this needs a helper function
+void BinaryTree::DeleteNode(int numberToDelete)
 {
 	if (root->nodeNumber != numberToDelete) {
 		treeNode * Parent = findParent(numberToDelete, root);
@@ -324,6 +310,21 @@ void BinaryTree::FreeNodes(treeNode * nodeWalker)
 		FreeNodes(nodeWalker);
 	}
 
+	return;
+}
+
+/************************************************************************
+* FUNCTION: BinaryTree()
+* DESCRIPTION: constructor for binary search tree structure, and
+* initialize the root pointer to NULL and the Node count to 0
+* INPUT PARAMETERS: N/A
+* OUTPUT: none
+* RETURN VALUE: N/A
+*************************************************************************/
+BinaryTree::BinaryTree()
+{
+	numberOfNodes = 0;
+	root = NULL;
 	return;
 }
 
