@@ -16,7 +16,7 @@ treeNode * BinaryTree::findParent(int numberToDelete, treeNode * curr)
 		return curr;
 	else if (curr->rightPointer->nodeNumber == numberToDelete)
 		return curr;
-	else if (numberToDelete > curr->nodeNumber)
+	else if (numberToDelete > curr->nodeNumber && curr->)
 		return findParent(numberToDelete, curr->leftPointer);
 	else if (numberToDelete < curr->nodeNumber)
 		return findParent(numberToDelete, curr->rightPointer);
@@ -224,6 +224,7 @@ bool BinaryTree::InsertNode(treeNode * tempPtr)
 *************************************************************************/
 void BinaryTree::DeleteNode(int numberToDelete)
 {
+	//find first branch w/ null children and replace into deleted node
 	if (root->nodeNumber != numberToDelete) {
 		treeNode * Parent = findParent(numberToDelete, root);
 		if (Parent != NULL)//NULL means could not find node
@@ -397,6 +398,11 @@ void BinaryTree::InOrderDisplayCall()
 
 	return;
 
+}
+
+GameList * BinaryTree::MostPlayedGame()
+{
+	return nullptr;
 }
 
 /************************************************************************
