@@ -36,7 +36,6 @@ public:
 	BinaryTree();//creates a pointer to the root of the tree and a counter for number of nodes in tree
 	~BinaryTree();// de-allocates all dynamic memory allocated for the binary search tree.
 	bool IsEmpty();//returns true if binary search tree is empty, false otherwise
-	int getSize();//return numberOfNodes
 	bool InsertNode(int id_64, string uName, GameList* gList); // inserts a new node into the correct location within a binary search tree.
 	bool FindNode(int numberToFind);//finds a node, or NULL if tree is empty, or would-be parent node if node doesn't exist
 	treeNode* CreateNode(int numberToPlace, string steamID, GameList* topFive);// allocate and fills new node. Passes back pointer to new node, or NULL if node could not be allocated.
@@ -44,7 +43,7 @@ public:
 	void FreeNodes(treeNode* nodeWalker);// recursively de-allocates all dynamic memory allocated to nodes in the binary search tree.
 	void InOrderDisplay(treeNode* nodeWalker, int &i);// neatly displays all integers in the list in sorted order, using a recursive, in-order traversal.
 	void InOrderDisplayCall();//calls InOrderDisplay if necessary
-	//void MostPlayedGame(string gameWithMostTime, int  &timeSpentPlayingGame);
+	GameList* MostPlayedGame();
 };
 /*
 void UserMenuToInputTextFileName(string & inputTextFile);	//menu for user to imput string file.  Returns when correct

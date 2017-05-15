@@ -1,13 +1,8 @@
 #ifndef GameList_H
 #define GameList_H
 #include <string>
+#include "common.h"
 using std::string;
-
-struct ListNode {
-	string name;
-	unsigned int appID;
-	unsigned int playTime;
-};
 
 class GameList {
 public:
