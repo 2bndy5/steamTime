@@ -17,6 +17,6 @@ struct ListNode {
 	unsigned int playTime;
 };
 
-const int MAX_TREE_SIZE = 10;
+const int MAX_TREE_SIZE = 100;
 
 #endif // !Common_H
