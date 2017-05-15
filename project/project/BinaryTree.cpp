@@ -24,20 +24,6 @@ treeNode * BinaryTree::findParent(int numberToDelete, treeNode * curr)
 }
 
 /************************************************************************
-* FUNCTION: BinaryTree()
-* DESCRIPTION: constructor for binary search tree structure, and 
-* initialize the root pointer to NULL and the Node count to 0
-* INPUT PARAMETERS: N/A
-* OUTPUT: none
-* RETURN VALUE: N/A
-*************************************************************************/
-BinaryTree::BinaryTree()
-{
-	root = NULL;
-	numberOfNodes = 0;
-}
-
-/************************************************************************
 * FUNCTION: IsEmpty()
 * DESCRIPTION: determines whether root node is empty or not
 * INPUT PARAMETERS: none
@@ -116,6 +102,7 @@ treeNode * BinaryTree::CreateNode(int numberToPlace, string steamID, GameList* t
 	}
 	else
 	{
+		//create treeNode member attribute to store total overall time per player
 		nodeCreated->nodeNumber = numberToPlace;
 		nodeCreated->steamUser = steamID;
 		nodeCreated->top5 = topFive;
@@ -235,7 +222,7 @@ bool BinaryTree::InsertNode(treeNode * tempPtr)
 * OUTPUT: none
 * RETURN VALUE: none
 *************************************************************************/
-void BinaryTree::DeleteNode(int numberToDelete) //this needs a helper function
+void BinaryTree::DeleteNode(int numberToDelete)
 {
 	if (root->nodeNumber != numberToDelete) {
 		treeNode * Parent = findParent(numberToDelete, root);
@@ -327,6 +314,21 @@ void BinaryTree::FreeNodes(treeNode * nodeWalker)
 }
 
 /************************************************************************
+* FUNCTION: BinaryTree()
+* DESCRIPTION: constructor for binary search tree structure, and
+* initialize the root pointer to NULL and the Node count to 0
+* INPUT PARAMETERS: N/A
+* OUTPUT: none
+* RETURN VALUE: N/A
+*************************************************************************/
+BinaryTree::BinaryTree()
+{
+	numberOfNodes = 0;
+	root = NULL;
+	return;
+}
+
+/************************************************************************
 * FUNCTION: DestroyTree()
 * DESCRIPTION: Calls FreeNodes() to delete all the tree nodes and then destroys the root 
 * pointers 
@@ -379,9 +381,9 @@ void BinaryTree::InOrderDisplay(treeNode * nodeWalker, int & i)
 void BinaryTree::InOrderDisplayCall()
 {
 	treeNode* nodeWalker = root;
-	int i = 0;															// if(i%10==0, then cout << endl
+	int i = 0;				// if(i%10==0, then cout << endl
 
-																		//cout << "\nNumber of nodes is " << treeRoot.numberOfNodes << endl;
+							//cout << "\nNumber of nodes is " << treeRoot.numberOfNodes << endl;
 
 	if (IsEmpty())
 	{

@@ -1,9 +1,9 @@
-#include "getLibInfo.h"
+#include "LibInfo.h"
 
 BOOL LibInfo::ReadWebPage(string &source, bool secure, const wchar_t *url, const wchar_t *verb)
 {
 	source = "error";
-	BOOL  bResults = FALSE;
+	BOOL bResults = FALSE;
 	HINTERNET hsession = NULL;
 	HINTERNET hconnect = NULL;
 	HINTERNET hrequest = NULL;
@@ -42,7 +42,9 @@ error:
 	return bResults;
 }
 
-string getSteamID()
+LibInfo::LibInfo(){}
+
+string LibInfo::getSteamID()
 {
 	string id;
 	cout << "Enter Steam Username: ";
@@ -50,7 +52,7 @@ string getSteamID()
 	return id;
 }
 
-string convertSteamID(string &ID_64){
+string LibInfo::convertSteamID(string &ID_64){
 	string src = "";
 	string subURL = "steamid/";
 	subURL += ID_64;
@@ -152,7 +154,7 @@ GameList* LibInfo::extractGames(bool logOutput, string &id)
 	wstring widestr = wstring(subURL.begin(), subURL.end());
 	ReadWebPage(src, false, L"api.steampowered.com", widestr.c_str());
 	//http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=76561198054478758&format=csv
-	int gameCount = stoi(src.substr(src.find("game_count") + 12, src.find(",") - src.find("game_count")));
+	unsigned int gameCount = stoul(src.substr(src.find("game_count") + 12, src.find(",") - src.find("game_count")));
 	if (logOutput){
 		ofstream log("games.csv");
 		log << src;
@@ -170,9 +172,9 @@ GameList* LibInfo::extractGames(bool logOutput, string &id)
 	for (size_t i = 0; i < src.length(); i++) {
 		if (src.find("appid", i) >= src.length())
 			break;
-		unsigned int appid = stoi(src.substr(src.find("appid", i) + 8, src.find(",", src.find("appid", i)) - src.find("appid", i) - 8));
+		unsigned int appid = stoul(src.substr(src.find("appid", i) + 8, src.find(",", src.find("appid", i)) - src.find("appid", i) - 8));
 		string gameTitle = src.substr(src.find("name", i) + 8, src.find("\",", i) - src.find("name", i) - 8);
-		unsigned int appTime = stoi(src.substr(src.find("playtime_forever", i) + 19, src.find("\",", i) - src.find("playtime_forever", i) - 19));
+		unsigned int appTime = stoul(src.substr(src.find("playtime_forever", i) + 19, src.find("\",", i) - src.find("playtime_forever", i) - 19));
 		totalPlaytime += appTime;
 		if (logOutput)
 			fout << appid << " = " << gameTitle << " (" << appTime << " minutes)" << endl;
@@ -198,49 +200,7 @@ GameList* LibInfo::extractGames(bool logOutput, string &id)
 	return games;
 }
 
-// This is to be split into two functions the first will be to find friends and then the second one will use the friend list and call
-// extract games for each friend. The original is directly underneath this comment.
-
-// void findFriends(bool logOutput, string &id, bool indexGames)
-// {
-// 	string src;
-// 	string subURL = "ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=";
-// 	subURL += getAccountNumber(id);
-// 	subURL += "&relationship=all&format=xml";
-// 	wstring widestr = wstring(subURL.begin(), subURL.end());
-// 	ReadWebPage(src, false, L"api.steampowered.com", widestr.c_str());
-// 	//http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=76561198054478758&relationship=all&format=xml
-// 	if (logOutput) {
-// 		ofstream log("friends.xml");
-// 		log << src;
-// 		log.close();
-// 	}
-	
-// 	ofstream fout;
-// 	if (logOutput)
-// 		fout.open("Friends Parsed.txt");
-// 	int friendCount = 0;
-// 	for (int i = 0; i < src.length(); i++) {
-// 		if (src.find("</steamid>", i) >= src.length())
-// 			break;
-// 		string friendID_64 = src.substr(src.find("<steamid>", i) + 9, src.find("</steamid>", i) - src.find("<steamid>", i) - 9);
-// 		string friendUsername = convertSteamID(friendID_64);
-// 		friendCount++;
-// 		if (logOutput)
-// 			fout << friendCount << ". " << friendID_64 << " = " << friendUsername << endl;
-// 		cout << friendCount << ". " << friendID_64 << " = " << friendUsername << endl;
-// 		if (indexGames)
-// 			extractGames(logOutput, friendID_64, false);
-// 		i = src.find("</steamid>", i);
-// 	}
-// 	if (logOutput) {
-// 		fout << "Friends found = " << friendCount << endl;
-// 		fout.close();
-// 	}
-// 	cout << "Friends found = " << friendCount << endl;
-// }
-
-void LibInfo::findFriends(bool logOutput, string &id, bool indexGames, BinaryTree *tree)
+void LibInfo::findFriends(bool logOutput, string &id)
 {
 	string src;
 	string subURL = "ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=";
@@ -254,16 +214,15 @@ void LibInfo::findFriends(bool logOutput, string &id, bool indexGames, BinaryTre
 		log << src;
 		log.close();
 	}
-	useFriendList(logOutput, src, indexGames, tree);
+	useFriendList(logOutput, src);
 }
 
 // This function will extract the games for each friend 
-// Inherit all functions into GetLibInfo Class and set the following function to private
-void LibInfo::useFriendList(bool logOutput, string &src, bool indexGames, BinaryTree *tree)
+void LibInfo::useFriendList(bool logOutput, string &src)
 {
 	ofstream fout;
 	if (logOutput)
-		fout.open("Friends Parsed.txt");
+		fout.open("Friends Parsed.txt", ios::app);
 
 	for (size_t i = 0; i < src.length(); i++) 
   	{
@@ -278,17 +237,18 @@ void LibInfo::useFriendList(bool logOutput, string &src, bool indexGames, Binary
 		cout << friendID_64 << " = " << friendUsername << endl;
 		
 		// Using max global variable to cap the tree
-		if (indexGames && numberOfNodes < MAX_TREE_SIZE) // Once max size is reached it will stop inserting nodes
+		if (numberOfNodes < MAX_TREE_SIZE) // Once max size is reached it will stop inserting nodes
 		{
-			tree->InsertNode(stoi(friendID_64), friendUsername, extractGames(logOutput, friendID_64, false)); // needs to be true to run its own if statement in the following iteration
+			InsertNode(stoull(friendID_64), friendUsername, extractGames(logOutput, friendID_64)); // needs to be true to run its own if statement in the following iteration
 		}
 		
 		i = src.find("</steamid>", i);
 	}
 	// Output the size of the tree - 1 because not counting root
-	if (logOutput) { // NEEDS .getSize for tree
-		fout << "Friends found = " << tree.getSize() -1 << endl; // scr.length() == Friend Count
+	if (logOutput) { 
+		fout << "Friends found = " << numberOfNodes - 1 << endl;
 		fout.close();
 	}
-	else cout << "Friends found = " << tree.getSize() -1 << endl;
+	else cout << "Friends found = " << numberOfNodes -1 << endl;
 }
+

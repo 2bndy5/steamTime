@@ -1,25 +1,22 @@
 #include <iostream>
 #include <string>
-#include "GameList.h"
-#include "getLibInfo.h"
-#include "BinaryTree.h"
+#include "LibInfo.h"
 using namespace std;
+
 
 int main(int argc, char *argv[])
 {
+	LibInfo* driver = new LibInfo;
 	if (argc >= 2) {
 		string user(argv[1]);
-		extractAllApps( user, true);
+		driver->extractAllApps( user, true);
 	}
 	else {
-		string rootUser = getSteamID();
-		string rootSteamID_64 = getAccountNumber(rootUser);
-		BinaryTree* bt = new BinaryTree;
-		GameList* gList = extractGames(false, rootSteamID_64);
-		bt->InsertNode(stoi(rootSteamID_64), rootUser, gList);
-		//	findFriends(logOutput, id, indexFriends);
-		//findFriends(false, rootSteamID_64, false);
-
+		string rootUser = driver->getSteamID();
+		string rootSteamID_64 = driver->getAccountNumber(rootUser);
+		GameList* gList = driver->extractGames(false, rootSteamID_64);
+		dynamic_cast<BinaryTree*>(driver)->InsertNode(stoull(rootSteamID_64), rootUser, gList);
+		driver->findFriends(true, rootSteamID_64);
 	}
 	return 0;
 }
