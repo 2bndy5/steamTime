@@ -251,3 +251,4 @@ void LibInfo::useFriendList(bool logOutput, string &src)
 	}
 	else cout << "Friends found = " << numberOfNodes -1 << endl;
 }
+
