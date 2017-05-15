@@ -7,6 +7,7 @@
 #include "windows.h"
 #include "Winhttp.h"
 #include "GameList.h"
+#include "common.h"
 #include "BinaryTree.h"
 using namespace std;
 

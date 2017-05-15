@@ -32,6 +32,7 @@ protected:
 	treeNode* findParent(int numberToDelete, treeNode* root);//delete node helper function
 	bool InsertNode(treeNode* tempPtr);//overload to redistribute excess node after deletion
 	int numberOfNodes;
+	treeNode* traverseTree(treeNode* curr);
 public:
 	BinaryTree();//creates a pointer to the root of the tree and a counter for number of nodes in tree
 	~BinaryTree();// de-allocates all dynamic memory allocated for the binary search tree.

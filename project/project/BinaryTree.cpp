@@ -16,9 +16,9 @@ treeNode * BinaryTree::findParent(int numberToDelete, treeNode * curr)
 		return curr;
 	else if (curr->rightPointer->nodeNumber == numberToDelete)
 		return curr;
-	else if (numberToDelete > curr->nodeNumber && curr->)
+	else if (numberToDelete > curr->nodeNumber && curr->leftPointer != NULL)
 		return findParent(numberToDelete, curr->leftPointer);
-	else if (numberToDelete < curr->nodeNumber)
+	else if (numberToDelete < curr->nodeNumber && curr->rightPointer != NULL)
 		return findParent(numberToDelete, curr->rightPointer);
 	else return NULL;//invalid input: could not find node
 }
@@ -214,6 +214,10 @@ bool BinaryTree::InsertNode(treeNode * tempPtr)
 	}
 	return success;
 }
+treeNode * BinaryTree::traverseTree(treeNode * curr)
+{
+	return nullptr;
+}
 /************************************************************************
 * FUNCTION: DeleteNode()
 * DESCRIPTION: deletes a node from the binary search tree.
@@ -400,11 +404,6 @@ void BinaryTree::InOrderDisplayCall()
 
 }
 
-GameList * BinaryTree::MostPlayedGame()
-{
-	return nullptr;
-}
-
 /************************************************************************
 * FUNCTION: MostPlayedGame()
 * DESCRIPTION: traverses the tree and counts how much time is spent playing each game.  
@@ -413,82 +412,17 @@ GameList * BinaryTree::MostPlayedGame()
 * OUTPUT: none
 * RETURN VALUE: none
 *************************************************************************/
-/*
-void BinaryTree::MostPlayedGame(string gameWithMostTime, int & timeSpentPlayingGame)
+GameList*  BinaryTree::MostPlayedGame()
 {
-	string gameNames[numberOfNodes * 5] = { "000" }; //ordered array of strings that will remain mostly empty strings
-	int gameTimes[numberOfNode * 5] = { -1 };
-	treeNode * tempNodePointer = root;				//this pointer traverses the tree and builds the games[] array
-	int stringCompare;
-	string tempString;									//this int will be -1, 0, or 1 depending on how the strings compare alphabetically
+	ListNode* games = new ListNode; //ordered array of strings that will remain mostly empty strings
+	GameList* result;
 
-														//traverses entire tree, counting games
-	for (int i = 0; i<5; i++)
-	{
-		if (tempNodePointer.gameNameInTree[i] == "000")
-		{
-			if (tempNodePointer.gamesTimeInTree[i] != -1)			//check for error
-			{
-				cout << "\nError in gameNames/gameTimes matchup.  A 000 game should have -1 time!\n";
-			}
-
-			i = 5;
-		}
-		else//since gameName != "000", then a name exists in this slot and it must be inserted into the gameNames[] array.  
-		{
-			//using alphabetical insertion
-			for (int j = 0; j<treeRoot.numberOfNodes * 5; j++)
-			{
-				stringCompare = strcmp(tempNodePointer.gameNameInTree[i], gameNames[j])
-
-					if (stringCompare == 0) //names Match
-					{
-						gameTimes[j] += tempNodePointer.gameTimeInTree[i];
-						j = numberOfNodes * 5 + 1;//exit loop
-						i = 5;//exit out loop
-					}
-					else if (stringCompare == -1)//insert new game name IN FRONT OF current game.... need to shift arrays to the right
-					{
-						for (int k = treeRoot.numberOfNodes * 5 - 1; k = j; k--)
-						{
-							if (gameNames[k] != "000")
-							{
-								gameTimes[k + 1] = gameTimes[k];
-								gameNames[k + 1] = gameNames[k];
-							}
-						}//completed array shift loops
-
-						gameNames[j] = tempNodePointer.gameNameInTree[i];
-						gameTimes[j] = tempnodePointer.gameTimeInTree[i];
-					}
-				//else - stringCompare == 1, then move to the next name in the array and compare again
-			}
-		}//end for loop for int j < numberOfNodes*5
-	}//end for loop for int i < 5
-	 //at this point, this node has been read and we need to move the pointer to the next node in the tree
-
-
-	if (nodeWalker->leftPointer != NULL)
-	{
-
-		InOrderDisplay(nodeWalker->leftPointer, i);
-	}
-
-	i++;
-	cout << setw(6) << right << nodeWalker->nodeNumber;
-	if (i % 10 == 0)
-	{
-		cout << endl;
-	}
-
-	if (nodeWalker->rightPointer != NULL)
-	{
-		InOrderDisplay(nodeWalker->rightPointer, i);
-	}
-
+	//traverses entire tree, counting games
+	treeNode* curr = root;
+	while (traverseTree(curr))
 	return;
 }
-*/
+
 
 /************************************************************************
 * FUNCTION: UserMenuToInputTextFileName()

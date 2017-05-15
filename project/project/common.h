@@ -17,6 +17,11 @@ struct ListNode {
 	unsigned int playTime;
 };
 
+struct LinkListNode :public ListNode
+{
+	LinkListNode* next = NULL;
+};
+
 const int MAX_TREE_SIZE = 10;
 
 #endif // !Common_H

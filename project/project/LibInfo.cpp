@@ -166,8 +166,8 @@ GameList* LibInfo::extractGames(bool logOutput, string &id)
 
 
 	//start parsing results
-	unsigned int totalPlaytime = 0;
-	unsigned int gamesPlayed = 0;
+	//unsigned int totalPlaytime = 0;
+	//unsigned int gamesPlayed = 0;
 	GameList* games = new GameList;
 	for (size_t i = 0; i < src.length(); i++) {
 		if (src.find("appid", i) >= src.length())
@@ -175,27 +175,25 @@ GameList* LibInfo::extractGames(bool logOutput, string &id)
 		unsigned int appid = stoul(src.substr(src.find("appid", i) + 8, src.find(",", src.find("appid", i)) - src.find("appid", i) - 8));
 		string gameTitle = src.substr(src.find("name", i) + 8, src.find("\",", i) - src.find("name", i) - 8);
 		unsigned int appTime = stoul(src.substr(src.find("playtime_forever", i) + 19, src.find("\",", i) - src.find("playtime_forever", i) - 19));
-		totalPlaytime += appTime;
+		//totalPlaytime += appTime;
 		if (logOutput)
 			fout << appid << " = " << gameTitle << " (" << appTime << " minutes)" << endl;
 		if (appTime > 0) {
 			cout << appid << " = " << gameTitle << " (" << appTime << " minutes)" << endl;
 			games->addNode(gameTitle, appid, appTime);
-			gamesPlayed++;
+		//	gamesPlayed++;
 		}
 		i = src.find("}", i);
 	}
 	if (logOutput) {
 		fout << "Game count = " << gameCount << endl;
-		fout << "Games played = " << gamesPlayed << endl;
-		fout << "Total time spent playing = " << totalPlaytime << " minutes" << endl;
-		fout << "Average playtime per game played = " << (double)totalPlaytime / gamesPlayed << " minutes" << endl;
+		//fout << "Games played = " << gamesPlayed << endl;
+		//fout << "Total time spent playing = " << totalPlaytime << " minutes" << endl;
 		fout.close();
 	}
 	cout << "Game count = " << gameCount << endl;
-	cout << "Games played = " << gamesPlayed << endl;
-	cout << "Total time spent playing = " << totalPlaytime << " minutes" << endl;
-	cout << "Average playtime per game played = " << (double)totalPlaytime / gamesPlayed << " minutes" << endl;
+	//cout << "Games played = " << gamesPlayed << endl;
+	//cout << "Total time spent playing = " << totalPlaytime << " minutes" << endl;
 
 	return games;
 }
@@ -239,7 +237,7 @@ void LibInfo::useFriendList(bool logOutput, string &src)
 		// Using max global variable to cap the tree
 		if (numberOfNodes < MAX_TREE_SIZE) // Once max size is reached it will stop inserting nodes
 		{
-			InsertNode(stoull(friendID_64), friendUsername, extractGames(logOutput, friendID_64)); // needs to be true to run its own if statement in the following iteration
+			InsertNode(stoul(friendID_64), friendUsername, extractGames(logOutput, friendID_64)); // needs to be true to run its own if statement in the following iteration
 		}
 		
 		i = src.find("</steamid>", i);
