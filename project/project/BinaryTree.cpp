@@ -409,118 +409,74 @@ GameList * BinaryTree::MostPlayedGame()
 * FUNCTION: MostPlayedGame()
 * DESCRIPTION: traverses the tree and counts how much time is spent playing each game.  
 * Game with most hours spent is returned
-* INPUT PARAMETERS: root pointer
+* INPUT PARAMETERS: inherits root (none)
 * OUTPUT: none
-* RETURN VALUE: none
+* RETURN VALUE: GameList * which contains 5 games and 5 playtimes
 *************************************************************************/
-/*
-void BinaryTree::MostPlayedGame(string gameWithMostTime, int & timeSpentPlayingGame)
+
+GameList* BinaryTree::MostPlayedGame()
 {
-	string gameNames[numberOfNodes * 5] = { "000" }; //ordered array of strings that will remain mostly empty strings
-	int gameTimes[numberOfNode * 5] = { -1 };
-	treeNode * tempNodePointer = root;				//this pointer traverses the tree and builds the games[] array
-	int stringCompare;
-	string tempString;									//this int will be -1, 0, or 1 depending on how the strings compare alphabetically
-
-														//traverses entire tree, counting games
-	for (int i = 0; i<5; i++)
+	LinkedListNode* gamesDynamicListFront = NULL;		//Always points to the first element of the list
+	GameList* resultToReturn = NULL;
+	treeNode* treeWalker = root;
+	int linkedListSize = 0;
+		
+	if (!isEmpty())						
 	{
-		if (tempNodePointer.gameNameInTree[i] == "000")
-		{
-			if (tempNodePointer.gamesTimeInTree[i] != -1)			//check for error
-			{
-				cout << "\nError in gameNames/gameTimes matchup.  A 000 game should have -1 time!\n";
-			}
-
-			i = 5;
-		}
-		else//since gameName != "000", then a name exists in this slot and it must be inserted into the gameNames[] array.  
-		{
-			//using alphabetical insertion
-			for (int j = 0; j<treeRoot.numberOfNodes * 5; j++)
-			{
-				stringCompare = strcmp(tempNodePointer.gameNameInTree[i], gameNames[j])
-
-					if (stringCompare == 0) //names Match
-					{
-						gameTimes[j] += tempNodePointer.gameTimeInTree[i];
-						j = numberOfNodes * 5 + 1;//exit loop
-						i = 5;//exit out loop
-					}
-					else if (stringCompare == -1)//insert new game name IN FRONT OF current game.... need to shift arrays to the right
-					{
-						for (int k = treeRoot.numberOfNodes * 5 - 1; k = j; k--)
-						{
-							if (gameNames[k] != "000")
-							{
-								gameTimes[k + 1] = gameTimes[k];
-								gameNames[k + 1] = gameNames[k];
-							}
-						}//completed array shift loops
-
-						gameNames[j] = tempNodePointer.gameNameInTree[i];
-						gameTimes[j] = tempnodePointer.gameTimeInTree[i];
-					}
-				//else - stringCompare == 1, then move to the next name in the array and compare again
-			}
-		}//end for loop for int j < numberOfNodes*5
-	}//end for loop for int i < 5
-	 //at this point, this node has been read and we need to move the pointer to the next node in the tree
-
-
-	if (nodeWalker->leftPointer != NULL)
-	{
-
-		InOrderDisplay(nodeWalker->leftPointer, i);
+		TraverseTree(treeWalker, gamesDynamicListFront, linkedListSize);	//traverses entire tree, counting games
 	}
-
-	i++;
-	cout << setw(6) << right << nodeWalker->nodeNumber;
-	if (i % 10 == 0)
-	{
-		cout << endl;
-	}
-
-	if (nodeWalker->rightPointer != NULL)
-	{
-		InOrderDisplay(nodeWalker->rightPointer, i);
-	}
-
-	return;
+	
+	return resultToReturn;
 }
-*/
 
 /************************************************************************
-* FUNCTION: UserMenuToInputTextFileName()
-* DESCRIPTION: menu for user to imput string file. 
-* INPUT PARAMETERS: blank string for the name of the inputTextFile name.  Does error 
-* checking to see if file exists before return
+* FUNCTION: TraverseTree()
+* DESCRIPTION: recursively traverses the entire tree, building the linked list of games as it 
+*		walks the tree
+* INPUT PARAMETERS: treeWalker pointer, and gamesDynamicList
 * OUTPUT: none
-* RETURN VALUE: none
+* RETURN VALUE: memory allocation validation int.  Zero means all good in the hood
 *************************************************************************/
-/*
-void UserMenuToInputTextFileName(string & inputTextFile)
-{
-	ifstream infile;
 
-	cout << "\nWelcome to the BST builder.\nPlease enter the name of a text input file: ";
-	cin >> inputTextFile;
+void BinaryTree::TraverseTree(treeNode * treeWalker, ListNode* gamesDynamicList, int & linkedListSize)
+{//traverses entire tree LRV... Left, Right, then Value
+	
+	if (treeWalker->leftPointer != NULL)		//Left first
+	{TraverseTree(treeWalker->leftPointer, gamesDynamicListFront, linkedListSize++);}
 
-	infile.open(inputTextFile.c_str());
+	if (treeWalker->rightPointer != NULL)		//Right second
+	{TraverseTree(treeWalker->rightPointer, gamesDynamicListFront, linkedListSize++);}
+	
+	//at this point in the code, you are at a leaf node, or both left and right legs have been traversed
+	//LRV .... LR are done, now for V
+	LinkedListNode* tempNode = new(nothrow) ListNode;
+	LinkedListNode* listWalker = gamesDynamicListFront;
 
-
-	while (!infile.good())
+	if (tempNode == NULL)
 	{
-		cout << endl << "\nFile " << inputTextFile << " does not exist.  Please enter the name of a text input file: ";
-		cin >> inputTextFile;
-		infile.open(inputTextFile.c_str());
+		cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";
+	}
+	else
+	{
+		if(gamesDynamicListFront == NULL)		//List is empty
+		{gamesDynamicListFront = tempNode;}
+		else                                    //Will traverse list & compare/insert by gameApp number ordering
+		{	
+			for (int i = 5; i < 5; i++)
+			{
+				if (treeWalker->top5->l[i] == NULL)
+				{
+
+				}
+			}
+
+			
+		}
 	}
 
-	//cout << endl << inputTextFile  << endl << infile.rdbuf() << endl;
-	infile.close();
+
 	return;
 }
-*/
 
 /************************************************************************
 * FUNCTION: ReadTextFile()
