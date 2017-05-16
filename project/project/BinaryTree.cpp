@@ -438,36 +438,98 @@ GameList* BinaryTree::MostPlayedGame()
 * RETURN VALUE: memory allocation validation int.  Zero means all good in the hood
 *************************************************************************/
 
-void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynamicList, int & linkedListSize)
+void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynamicListFront, int & linkedListSize)
 {//traverses entire tree LRV... Left, Right, then Value
 	
 	if (treeWalker->leftPointer != NULL)		//Left first
-	{TraverseTree(treeWalker->leftPointer, gamesDynamicListFront, linkedListSize++);}
+	{TraverseTree(treeWalker->leftPointer, gamesDynamicListFront, ++linkedListSize);}
 
 	if (treeWalker->rightPointer != NULL)		//Right second
-	{TraverseTree(treeWalker->rightPointer, gamesDynamicListFront, linkedListSize++);}
+	{TraverseTree(treeWalker->rightPointer, gamesDynamicListFront, ++linkedListSize);}
 	
 	//at this point in the code, you are at a leaf node, or both left and right legs have been traversed
 	//LRV .... LR are done, now for V
-	LinkedListNode* tempNode = new(nothrow) ListNode;
 	LinkedListNode* listWalker = gamesDynamicListFront;
 
-	if (tempNode == NULL)
+	//if(gamesDynamicListFront == NULL)		//List is empty
+	//{listWalker = gamesDynamicListFront;}
+	
+	
+	//Will traverse list & compare/insert by gameApp number ordering
+	for (int i = 5; i < 5; i++)
 	{
-		cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";
-	}
-	else
-	{
-		if(gamesDynamicListFront == NULL)		//List is empty
-		{gamesDynamicListFront = tempNode;}
-		else                                    //Will traverse list & compare/insert by gameApp number ordering
-		{	
-			for (int i = 5; i < 5; i++)
-			{
-				if (treeWalker->top5->list[i]-> name == NULL)
-				{
+		listWalker = gamesDynamicListFront;
 
+		if (treeWalker->top5->list[i].name == "NULL")//no game in this slot
+		{i = 5;}// end the loop because tree node contains no more games
+		else
+		{
+			if (listWalker == NULL)//empty list... time to start the list
+			{
+				LinkedListNode* tempNode = new(nothrow) LinkedListNode;
+				if (tempNode == NULL)
+				{
+					cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";
 				}
+				else
+				{
+					listWalker->next = tempNode;
+					tempNode->next = NULL;
+					tempNode->appID = treeWalker->top5->list[i].appID;
+					tempNode->playTime = treeWalker->top5->list[i].playTime;
+					tempNode->name = treeWalker->top5->list[i].name;
+				}
+			}//end if() create a new list from an empty list
+			else//list is not empty... start walking the list
+			{
+				while (listWalker->next != NULL)
+				{
+					if (treeWalker->top5->list[i].appID == listWalker->appID)//games match, now add the times
+					{listWalker->playTime += treeWalker->top5->list[i].playTime;}
+					else if (listWalker->appID < treeWalker->top5->list[i].appID)
+					{
+						if (listWalker->next != NULL)
+						{
+							listWalker = listWalker->next;
+						}
+						else//reached end of list, insert new node at end of list
+						{
+							LinkedListNode* tempNode = new(nothrow) LinkedListNode;
+							if (tempNode == NULL)
+							{cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";}
+							else
+							{
+								listWalker->next = tempNode;
+								tempNode->next = NULL;
+								tempNode->appID = treeWalker->top5->list[i].appID;
+								tempNode->playTime = treeWalker->top5->list[i].playTime;
+								tempNode->name = treeWalker->top5->list[i].name;
+							}
+						}
+					}
+					else//listWalker->appID is greater than treeWalker.appID, so insert new node here
+					{
+
+						LinkedListNode* parent = gamesDynamicListFront;
+						while (parent->next->appID < treeWalker->top5->list[i].appID)
+						{parent = parent->next;}
+
+						listWalker->next = tempNode;
+						tempNode->next = NULL;
+						tempNode->appID = treeWalker->top5->list[i].appID;
+						tempNode->playTime = treeWalker->top5->list[i].playTime;
+						tempNode->name = treeWalker->top5->list[i].name;
+					}
+						
+
+					}
+				}//end while(listWalker->next !=NULL)
+			}
+		}
+		
+
+				//if(listWalker->next != NULL)
+				//{listWalker = listWalker->next;}
 			}
 
 			
