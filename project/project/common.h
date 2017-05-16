@@ -24,10 +24,7 @@ struct LinkedListNode {
 	LinkedListNode * next = NULL;
 };
 
-
-
-
-
+static const int MAX_SIZE = 5;
 const int MAX_TREE_SIZE = 100;
 
 #endif // !Common_H
