@@ -2,7 +2,7 @@
 * PROGRAM FILENAME: Common.h
 * DESCRIPTION: global declarations
 * DESIGNER: Brendan Doherty
-* may 15, 2017
+* May 15, 2017
 * DVC COMSC200
 **********************************************************************************************/
 
