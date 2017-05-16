@@ -1,9 +1,9 @@
 /***********************************************************************************
-* PROGRAM FILENAME: Latona-BinaryTree_CS200.cpp
+* PROGRAM FILENAME: BinaryTree_CS200.cpp
 * DESCRIPTION:	This program builds a BST and reads input from a txt file
 * DESIGNER:  Jerome Latona
 *2 March 2017
-* Regis University CS372
+* DIablo Valley College ComSci 200
 ************************************************************************************/
 #ifndef BinaryTree_H
 #define BinaryTree_H
