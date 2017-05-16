@@ -21,7 +21,7 @@ struct LinkedListNode {
 	string name;
 	unsigned int appID;
 	unsigned int playTime;
-	ListNode * next = NULL;
+	LinkedListNode * next = NULL;
 };
 
 
