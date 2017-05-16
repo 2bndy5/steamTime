@@ -7,7 +7,6 @@ using std::string;
 class GameList {
 private:
 	bool isEmpty();
-	static const int MAX_SIZE = 5;
 public:
 	GameList();
 	~GameList();
