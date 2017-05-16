@@ -17,6 +17,17 @@ struct ListNode {
 	unsigned int playTime;
 };
 
+struct LinkedListNode {
+	string name;
+	unsigned int appID;
+	unsigned int playTime;
+	ListNode * next = NULL;
+};
+
+
+
+
+
 const int MAX_TREE_SIZE = 100;
 
 #endif // !Common_H
