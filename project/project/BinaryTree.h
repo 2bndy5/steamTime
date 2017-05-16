@@ -44,6 +44,7 @@ public:
 	void InOrderDisplay(treeNode* nodeWalker, int &i);// neatly displays all integers in the list in sorted order, using a recursive, in-order traversal.
 	void InOrderDisplayCall();//calls InOrderDisplay if necessary
 	GameList* MostPlayedGame();
+	void TraverseTree(treeNode * treeWalker, ListNode* gamesDynamicListFront, int & linkedListSize);
 };
 /*
 void UserMenuToInputTextFileName(string & inputTextFile);	//menu for user to imput string file.  Returns when correct
