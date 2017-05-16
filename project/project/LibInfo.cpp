@@ -198,6 +198,17 @@ GameList* LibInfo::extractGames(bool logOutput, string &id)
 	return games;
 }
 
+void LibInfo::indexFreinds()
+{
+	string friendID_64 = friends.front();
+	string friendUsername = convertSteamID(friendID_64);
+	if (numberOfNodes < MAX_TREE_SIZE) // Once max size is reached it will stop inserting nodes
+	{
+		InsertNode(stoul(friendID_64), friendUsername, extractGames(false, friendID_64)); // needs to be true to run its own if statement in the following iteration
+	}
+	friends.pop_front();
+}
+
 void LibInfo::findFriends(bool logOutput, string &id)
 {
 	string src;
@@ -212,11 +223,11 @@ void LibInfo::findFriends(bool logOutput, string &id)
 		log << src;
 		log.close();
 	}
-	useFriendList(logOutput, src);
+	parseFriendList(logOutput, src);
 }
 
 // This function will extract the games for each friend 
-void LibInfo::useFriendList(bool logOutput, string &src)
+void LibInfo::parseFriendList(bool logOutput, string &src)
 {
 	ofstream fout;
 	if (logOutput)
@@ -228,18 +239,8 @@ void LibInfo::useFriendList(bool logOutput, string &src)
 			break;
 		
 		string friendID_64 = src.substr(src.find("<steamid>", i) + 9, src.find("</steamid>", i) - src.find("<steamid>", i) - 9);
-		string friendUsername = convertSteamID(friendID_64);
 		
-		if (logOutput) 
-			fout << friendID_64 << " = " << friendUsername << endl;
-		cout << friendID_64 << " = " << friendUsername << endl;
-		
-		// Using max global variable to cap the tree
-		if (numberOfNodes < MAX_TREE_SIZE) // Once max size is reached it will stop inserting nodes
-		{
-			InsertNode(stoul(friendID_64), friendUsername, extractGames(logOutput, friendID_64)); // needs to be true to run its own if statement in the following iteration
-		}
-		
+		friends.push_back(friendID_64);
 		i = src.find("</steamid>", i);
 	}
 	// Output the size of the tree - 1 because not counting root

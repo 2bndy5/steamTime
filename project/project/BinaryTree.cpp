@@ -412,6 +412,7 @@ void BinaryTree::InOrderDisplayCall()
 * OUTPUT: none
 * RETURN VALUE: none
 *************************************************************************/
+/*
 GameList*  BinaryTree::MostPlayedGame()
 {
 	ListNode* games = new ListNode; //ordered array of strings that will remain mostly empty strings
@@ -420,8 +421,9 @@ GameList*  BinaryTree::MostPlayedGame()
 	//traverses entire tree, counting games
 	treeNode* curr = root;
 	while (traverseTree(curr))
-	return;
+	return result;
 }
+*/
 
 
 /************************************************************************
