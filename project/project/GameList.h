@@ -13,7 +13,7 @@ public:
 	ListNode list[MAX_SIZE];
 private:
 	bool isEmpty();
-	static const int MAX_SIZE = 5;
+	const int MAX_SIZE = 5;
 };
 
 #endif // !Game_H
