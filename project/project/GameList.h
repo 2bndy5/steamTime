@@ -10,10 +10,12 @@ public:
 	~GameList();
 	void print();
 	void addNode(string, unsigned int, unsigned int);
+	static const int MAX_SIZE = 5;
 	ListNode list[MAX_SIZE];
+	
 private:
 	bool isEmpty();
-	const int MAX_SIZE = 5;
+	
 };
 
 #endif // !Game_H
