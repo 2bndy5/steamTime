@@ -5,14 +5,14 @@
 using std::string;
 
 class GameList {
+private:
+	bool isEmpty();
+	static const int MAX_SIZE = 5;
 public:
 	GameList();
 	~GameList();
 	void print();
 	void addNode(string, unsigned int, unsigned int);
-private:
-	bool isEmpty();
-	static const int MAX_SIZE = 5;
 	ListNode list[MAX_SIZE];
 };
 
