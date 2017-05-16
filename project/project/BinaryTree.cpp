@@ -421,7 +421,7 @@ GameList* BinaryTree::MostPlayedGame()
 	treeNode* treeWalker = root;
 	int linkedListSize = 0;
 		
-	if (!isEmpty())						
+	if (!IsEmpty())						
 	{
 		TraverseTree(treeWalker, gamesDynamicListFront, linkedListSize);	//traverses entire tree, counting games
 	}
@@ -438,7 +438,7 @@ GameList* BinaryTree::MostPlayedGame()
 * RETURN VALUE: memory allocation validation int.  Zero means all good in the hood
 *************************************************************************/
 
-void BinaryTree::TraverseTree(treeNode * treeWalker, ListNode* gamesDynamicList, int & linkedListSize)
+void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynamicList, int & linkedListSize)
 {//traverses entire tree LRV... Left, Right, then Value
 	
 	if (treeWalker->leftPointer != NULL)		//Left first
@@ -464,7 +464,7 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, ListNode* gamesDynamicList,
 		{	
 			for (int i = 5; i < 5; i++)
 			{
-				if (treeWalker->top5->l[i] == NULL)
+				if (treeWalker->top5->list[i]-> name == NULL)
 				{
 
 				}
