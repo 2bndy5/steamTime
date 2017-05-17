@@ -17,9 +17,9 @@ treeNode * BinaryTree::findParent(int numberToDelete, treeNode * curr)
 		return curr;
 	else if (curr->rightPointer->nodeNumber == numberToDelete)
 		return curr;
-	else if (numberToDelete > curr->nodeNumber && curr->)
+	else if (numberToDelete > curr->nodeNumber && curr->leftPointer != NULL)
 		return findParent(numberToDelete, curr->leftPointer);
-	else if (numberToDelete < curr->nodeNumber)
+	else if (numberToDelete < curr->nodeNumber && curr->rightPointer != NULL)
 		return findParent(numberToDelete, curr->rightPointer);
 	else return NULL;//invalid input: could not find node
 }
@@ -215,6 +215,10 @@ bool BinaryTree::InsertNode(treeNode * tempPtr)
 	}
 	return success;
 }
+treeNode * BinaryTree::traverseTree(treeNode * curr)
+{
+	return nullptr;
+}
 /************************************************************************
 * FUNCTION: DeleteNode()
 * DESCRIPTION: deletes a node from the binary search tree.
@@ -401,21 +405,15 @@ void BinaryTree::InOrderDisplayCall()
 
 }
 
-GameList * BinaryTree::MostPlayedGame()
-{
-	return nullptr;
-}
-
 /************************************************************************
 * FUNCTION: MostPlayedGame()
 * DESCRIPTION: traverses the tree and counts how much time is spent playing each game.  
 * Game with most hours spent is returned
-* INPUT PARAMETERS: inherits root (none)
+* INPUT PARAMETERS: root pointer
 * OUTPUT: none
-* RETURN VALUE: GameList * which contains 5 games and 5 playtimes
+* RETURN VALUE: none
 *************************************************************************/
-
-GameList* BinaryTree::MostPlayedGame()
+GameList*  BinaryTree::MostPlayedGame()
 {
 	LinkedListNode* gamesDynamicListFront = NULL;		//Always points to the first element of the list
 	GameList* resultToReturn = NULL;
@@ -444,15 +442,15 @@ GameList* BinaryTree::MostPlayedGame()
 	return resultToReturn;
 }
 
+//change comment block to suit traverse tree
 /************************************************************************
-* FUNCTION: TraverseTree()
-* DESCRIPTION: recursively traverses the entire tree, building the linked list of games as it 
-*		walks the tree
-* INPUT PARAMETERS: treeWalker pointer, and gamesDynamicList
+* FUNCTION: UserMenuToInputTextFileName()
+* DESCRIPTION: menu for user to imput string file. 
+* INPUT PARAMETERS: blank string for the name of the inputTextFile name.  Does error 
+* checking to see if file exists before return
 * OUTPUT: none
-* RETURN VALUE: memory allocation validation int.  Zero means all good in the hood
+* RETURN VALUE: none
 *************************************************************************/
-
 void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynamicListFront, int & linkedListSize)
 {//traverses entire tree LRV... Left, Right, then Value
 	
@@ -555,7 +553,6 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynami
 			}
 		}
 	}
-		
 	return;
 }
 

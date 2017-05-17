@@ -32,6 +32,7 @@ protected:
 	treeNode* findParent(int numberToDelete, treeNode* root);//delete node helper function
 	bool InsertNode(treeNode* tempPtr);//overload to redistribute excess node after deletion
 	int numberOfNodes;
+	treeNode* traverseTree(treeNode* curr);
 public:
 	BinaryTree();//creates a pointer to the root of the tree and a counter for number of nodes in tree
 	~BinaryTree();// de-allocates all dynamic memory allocated for the binary search tree.
@@ -44,7 +45,6 @@ public:
 	void InOrderDisplay(treeNode* nodeWalker, int &i);// neatly displays all integers in the list in sorted order, using a recursive, in-order traversal.
 	void InOrderDisplayCall();//calls InOrderDisplay if necessary
 	GameList* MostPlayedGame();
-	void TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynamicListFront, int & linkedListSize);
 };
 /*
 void UserMenuToInputTextFileName(string & inputTextFile);	//menu for user to imput string file.  Returns when correct

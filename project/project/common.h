@@ -2,10 +2,9 @@
 * PROGRAM FILENAME: Common.h
 * DESCRIPTION: global declarations
 * DESIGNER: Brendan Doherty
-* May 15, 2017
+* may 15, 2017
 * DVC COMSC200
 **********************************************************************************************/
-
 #ifndef Common_H
 #define Common_H
 #include <string>
@@ -17,11 +16,9 @@ struct ListNode {
 	unsigned int playTime;
 };
 
-struct LinkedListNode {
-	string name;
-	unsigned int appID;
-	unsigned int playTime;
-	LinkedListNode * next = NULL;
+struct LinkListNode :public ListNode
+{
+	LinkListNode* next = NULL;
 };
 
 static const int MAX_SIZE = 5;
