@@ -45,6 +45,9 @@ public:
 	void InOrderDisplayCall();//calls InOrderDisplay if necessary
 	GameList* MostPlayedGame();
 	void TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynamicListFront, int & linkedListSize);
+	void MergeSortCall(ListNode * unsortedGameList, int linkedListSize);
+	void MergeSort(int lowIndex, int highIndex, ListNode * unsortedGameList, ListNode * sortedGameList);
+	void Merge(int midIndex, int lowIndex, int highIndex, ListNode * unsortedGameList, ListNode * sortedGameList)
 };
 /*
 void UserMenuToInputTextFileName(string & inputTextFile);	//menu for user to imput string file.  Returns when correct
