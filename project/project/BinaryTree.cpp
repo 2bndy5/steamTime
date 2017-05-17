@@ -370,7 +370,7 @@ void BinaryTree::InOrderDisplay(treeNode * nodeWalker, int & i)
 		InOrderDisplay(nodeWalker->rightPointer, i);
 
 	return;
-}
+}//end InOrderDisplay()
 
 /************************************************************************
 * FUNCTION: InOrderDisplayCall()
