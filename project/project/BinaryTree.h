@@ -1,9 +1,9 @@
 /***********************************************************************************
-* PROGRAM FILENAME: Latona-BinaryTree_CS200.cpp
+* PROGRAM FILENAME: BinaryTree_CS200.cpp
 * DESCRIPTION:	This program builds a BST and reads input from a txt file
 * DESIGNER:  Jerome Latona
 *2 March 2017
-* Regis University CS372
+* DIablo Valley College ComSci 200
 ************************************************************************************/
 #ifndef BinaryTree_H
 #define BinaryTree_H
@@ -44,6 +44,7 @@ public:
 	void InOrderDisplay(treeNode* nodeWalker, int &i);// neatly displays all integers in the list in sorted order, using a recursive, in-order traversal.
 	void InOrderDisplayCall();//calls InOrderDisplay if necessary
 	GameList* MostPlayedGame();
+	void TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynamicListFront, int & linkedListSize);
 };
 /*
 void UserMenuToInputTextFileName(string & inputTextFile);	//menu for user to imput string file.  Returns when correct
