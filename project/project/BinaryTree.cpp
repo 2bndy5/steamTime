@@ -1,4 +1,5 @@
 #include "BinaryTree.h"
+#include "Common.h"
 
 /************************************************************************
 * FUNCTION: findParent()
@@ -414,15 +415,34 @@ void BinaryTree::InOrderDisplayCall()
 *************************************************************************/
 GameList*  BinaryTree::MostPlayedGame()
 {
-	ListNode* games = new ListNode; //ordered array of strings that will remain mostly empty strings
-	GameList* result;
+	LinkedListNode* gamesDynamicListFront = NULL;		//Always points to the first element of the list
+	GameList* resultToReturn = NULL;
+	treeNode* treeWalker = root;
+	int linkedListSize = 0, max;
+		
+	if (!IsEmpty())						
+	{
+		TraverseTree(treeWalker, gamesDynamicListFront, linkedListSize);	//traverses entire tree, counting games
+	}
+	
+	MergeSort(gamesDynamicListFront)
 
-	//traverses entire tree, counting games
-	treeNode* curr = root;
-	while (traverseTree(curr))
-	return result;
+	
+	if(linkedListSize > MAX_SIZE)
+	{max = MAX_SIZE;}
+	else
+	{max = linkedListSize;}
+
+	for (int i=0; i < max ; i++)
+	{
+		//resultToReturn->list[i].888888888888888888  need to sort list  by playtime before population resultToReturn
+	}
+
+
+	return resultToReturn;
 }
 
+//change comment block to suit traverse tree
 /************************************************************************
 * FUNCTION: UserMenuToInputTextFileName()
 * DESCRIPTION: menu for user to imput string file. 
@@ -431,29 +451,110 @@ GameList*  BinaryTree::MostPlayedGame()
 * OUTPUT: none
 * RETURN VALUE: none
 *************************************************************************/
-/*
-void UserMenuToInputTextFileName(string & inputTextFile)
-{
-	ifstream infile;
+void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynamicListFront, int & linkedListSize)
+{//traverses entire tree LRV... Left, Right, then Value
+	
+	if (treeWalker->leftPointer != NULL)		//Left first
+	{TraverseTree(treeWalker->leftPointer, gamesDynamicListFront, ++linkedListSize);}
 
-	cout << "\nWelcome to the BST builder.\nPlease enter the name of a text input file: ";
-	cin >> inputTextFile;
+	if (treeWalker->rightPointer != NULL)		//Right second
+	{TraverseTree(treeWalker->rightPointer, gamesDynamicListFront, ++linkedListSize);}
+	
+	//at this point in the code, you are at a leaf node, or both left and right legs have been traversed
+	//LRV .... LR are done, now for V
+	LinkedListNode* listWalker = gamesDynamicListFront;
 
-	infile.open(inputTextFile.c_str());
-
-
-	while (!infile.good())
+	//if(gamesDynamicListFront == NULL)		//List is empty
+	//{listWalker = gamesDynamicListFront;}
+	
+	
+	//Will traverse list & compare/insert by gameApp number ordering
+	for (int i = 0; i < MAX_SIZE; i++)
 	{
-		cout << endl << "\nFile " << inputTextFile << " does not exist.  Please enter the name of a text input file: ";
-		cin >> inputTextFile;
-		infile.open(inputTextFile.c_str());
-	}
+		listWalker = gamesDynamicListFront;
 
-	//cout << endl << inputTextFile  << endl << infile.rdbuf() << endl;
-	infile.close();
+		if (treeWalker->top5->list[i].name == "NULL")//no game in this slot
+		{
+			i = MAX_SIZE;
+		}// end the loop because tree node contains no more games
+		else
+		{
+			if (listWalker == NULL)//empty list... time to start the list
+			{
+				LinkedListNode* tempNode = new(nothrow) LinkedListNode;
+				if (tempNode == NULL)
+				{
+					cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";
+				}
+				else
+				{
+					listWalker->next = tempNode;
+					tempNode->next = NULL;
+					tempNode->appID = treeWalker->top5->list[i].appID;
+					tempNode->playTime = treeWalker->top5->list[i].playTime;
+					tempNode->name = treeWalker->top5->list[i].name;
+				}
+			}//end if() create a new list from an empty list
+			else//list is not empty... start walking the list
+			{
+				while (listWalker->next != NULL)
+				{
+					if (treeWalker->top5->list[i].appID == listWalker->appID)//games match, now add the times
+					{
+						listWalker->playTime += treeWalker->top5->list[i].playTime;
+					}
+					else if (listWalker->appID < treeWalker->top5->list[i].appID)
+					{
+						if (listWalker->next != NULL)
+						{
+							listWalker = listWalker->next;
+						}
+						else//reached end of list, insert new node at end of list
+						{
+							LinkedListNode* tempNode = new(nothrow) LinkedListNode;
+							if (tempNode == NULL)
+							{
+								cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";
+							}
+							else
+							{
+								listWalker->next = tempNode;
+								tempNode->next = NULL;
+								tempNode->appID = treeWalker->top5->list[i].appID;
+								tempNode->playTime = treeWalker->top5->list[i].playTime;
+								tempNode->name = treeWalker->top5->list[i].name;
+							}
+						}
+					}
+					else//listWalker->appID is greater than treeWalker.appID, so insert new node here
+					{
+
+						LinkedListNode* parent = gamesDynamicListFront;
+						while (parent->next->appID < treeWalker->top5->list[i].appID)
+						{
+							parent = parent->next;
+						}
+
+						LinkedListNode* tempNode = new(nothrow) LinkedListNode;
+						if (tempNode == NULL)
+						{
+							cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";
+						}
+						else
+						{
+							listWalker->next = tempNode;
+							tempNode->next = NULL;
+							tempNode->appID = treeWalker->top5->list[i].appID;
+							tempNode->playTime = treeWalker->top5->list[i].playTime;
+							tempNode->name = treeWalker->top5->list[i].name;
+						}
+					}
+				}//end while(listWalker->next !=NULL)
+			}
+		}
+	}
 	return;
 }
-*/
 
 /************************************************************************
 * FUNCTION: ReadTextFile()

@@ -5,7 +5,6 @@
 * may 15, 2017
 * DVC COMSC200
 **********************************************************************************************/
-
 #ifndef Common_H
 #define Common_H
 #include <string>
@@ -22,6 +21,7 @@ struct LinkListNode :public ListNode
 	LinkListNode* next = NULL;
 };
 
-const int MAX_TREE_SIZE = 10;
+static const int MAX_SIZE = 5;
+const int MAX_TREE_SIZE = 100;
 
 #endif // !Common_H
