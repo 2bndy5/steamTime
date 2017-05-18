@@ -19,9 +19,14 @@ int main(int argc, char *argv[])
 		string rootUser = driver->getSteamID();
 		string rootSteamID_64 = driver->getAccountNumber(rootUser);
 		if (rootSteamID_64 != "not found") {
-			dynamic_cast<BinaryTree*>(driver)->InsertNode(stoull(rootSteamID_64), rootUser, driver->extractGames(false, rootSteamID_64));
+			BinaryTree* bt = dynamic_cast<BinaryTree*>(driver);
+			bt->InsertNode(stoull(rootSteamID_64), rootUser, driver->extractGames(false, rootSteamID_64));
 			driver->friends.push_back(rootSteamID_64);
 			driver->findFriends(false);
+			GameList* gList = bt->MostPlayedGame();
+			cout << "Top 5 Most played games out of ";
+			cout << MAX_TREE_SIZE << " users:" << endl;
+			gList->print();
 		}
 		else {
 			cout << "ERROR\n could not resolve username to 64 bit version of SteamID.\n";

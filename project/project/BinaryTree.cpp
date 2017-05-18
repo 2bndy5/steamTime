@@ -498,6 +498,7 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicL
 				{cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";}
 				else
 				{
+					//write access violation when listWalker == NULL
 					listWalker->next = tempNode;
 					tempNode->next = NULL;
 					tempNode->appID = treeWalker->top5->list[i].appID;
