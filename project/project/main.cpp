@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 		string rootUser = driver->getSteamID();
 		string rootSteamID_64 = driver->getAccountNumber(rootUser);
 		GameList* gList = driver->extractGames(false, rootSteamID_64);
-		dynamic_cast<BinaryTree*>(driver)->InsertNode(stoull(rootSteamID_64), rootUser, gList);
+		dynamic_cast<BinaryTree*>(driver)->InsertNode(stoul(rootSteamID_64), rootUser, gList);
 		driver->findFriends(true, rootSteamID_64);
 	}
 	return 0;

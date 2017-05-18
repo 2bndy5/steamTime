@@ -4,9 +4,11 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <deque>
 #include "windows.h"
 #include "Winhttp.h"
 #include "GameList.h"
+#include "common.h"
 #include "BinaryTree.h"
 using namespace std;
 
@@ -16,8 +18,9 @@ private:
 	const int MAX_TREE_SIZE = 10;
 	//BinaryTree* tree;
 	BOOL ReadWebPage(string &source, bool secure, const wchar_t *url, const wchar_t *verb);// source from http://stackoverflow.com/a/29552504
+	deque<string> friends;
 	string convertSteamID(string &);// for converting steam ID_64 to steam username
-	void useFriendList(bool logOutput, string &src);//findFriends() helper function to handle each friend's games individually
+	void parseFriendList(bool logOutput, string &src);//findFriends() helper function to handle each friend's games individually
 public:
 	explicit LibInfo();//empty constructor
 	string getSteamID();//get string from cin and return as steam username 
@@ -25,6 +28,7 @@ public:
 	void findFriends(bool logOutput, string &id);//crawl root user's friend list and index games
 	void extractAllApps(string &uName, bool logOutput);//gets library info from profile web page **includes software appIDs** called when cmd line arguments passed
 	GameList* extractGames(bool logOutput, string &id);//implement steam web API, but doesn't return software appIDs
+	void indexFreinds();//index freinds games from queue of freindsID_64
 //	BinaryTree* getBT();//return pointer to working binary tree object
 };
 
