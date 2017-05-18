@@ -212,7 +212,7 @@ void LibInfo::indexFreinds()
 	string friendUsername = convertSteamID(friendID_64);
 	if (numberOfNodes < MAX_TREE_SIZE) // Once max size is reached it will stop inserting nodes
 	{
-		InsertNode(stoul(friendID_64), friendUsername, extractGames(false, friendID_64)); // needs to be true to run its own if statement in the following iteration
+		InsertNode(stoull(friendID_64), friendUsername, extractGames(false, friendID_64)); // needs to be true to run its own if statement in the following iteration
 	}
 	friends.pop_front();
 }
