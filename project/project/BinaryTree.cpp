@@ -17,9 +17,9 @@ treeNode * BinaryTree::findParent(int numberToDelete, treeNode * curr)
 		return curr;
 	else if (curr->rightPointer->nodeNumber == numberToDelete)
 		return curr;
-	else if (numberToDelete > curr->nodeNumber && curr->)
+	else if (numberToDelete > curr->nodeNumber && curr->leftPointer != NULL)
 		return findParent(numberToDelete, curr->leftPointer);
-	else if (numberToDelete < curr->nodeNumber)
+	else if (numberToDelete < curr->nodeNumber && curr->rightPointer != NULL)
 		return findParent(numberToDelete, curr->rightPointer);
 	else return NULL;//invalid input: could not find node
 }
@@ -411,8 +411,8 @@ void BinaryTree::InOrderDisplayCall()
 *************************************************************************/
 GameList* BinaryTree::MostPlayedGame()
 {
-	LinkedListNode* gamesDynamicListFront = NULL;		//Always points to the first element of the list
-	LinkedListNode* temp = NULL;
+	LinkListNode* gamesDynamicListFront = NULL;		//Always points to the first element of the list
+	LinkListNode* temp = NULL;
 	GameList* resultToReturn = NULL;
 	treeNode* treeWalker = root;
 	int linkedListSize = 0, max;
@@ -463,7 +463,7 @@ GameList* BinaryTree::MostPlayedGame()
 * OUTPUT: none
 * RETURN VALUE: memory allocation validation int.  Zero means all good in the hood
 *************************************************************************/
-void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynamicListFront, int & linkedListSize)
+void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicListFront, int & linkedListSize)
 {//traverses entire tree LRV... Left, Right, then Value
 
 	if (treeWalker->leftPointer != NULL)		//Left first
@@ -474,7 +474,7 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynami
 	
 	//at this point in the code, you are at a leaf node, or both left and right legs have been traversed
 	//LRV .... LR are done, now for V
-	LinkedListNode* listWalker = gamesDynamicListFront;
+	LinkListNode* listWalker = gamesDynamicListFront;
 
 	//if(gamesDynamicListFront == NULL)		//List is empty
 	//{listWalker = gamesDynamicListFront;}
@@ -493,7 +493,7 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynami
 		{
 			if (listWalker == NULL)//empty list... time to start the list
 			{
-				LinkedListNode* tempNode = new(nothrow) LinkedListNode;
+				LinkListNode* tempNode = new(nothrow) LinkListNode;
 				if (tempNode == NULL)
 				{cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";}
 				else
@@ -521,7 +521,7 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynami
 						}
 						else//reached end of list, insert new node at end of list
 						{
-							LinkedListNode* tempNode = new(nothrow) LinkedListNode;
+							LinkListNode* tempNode = new(nothrow) LinkListNode;
 							if (tempNode == NULL)
 							{cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";}
 							else
@@ -536,13 +536,13 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynami
 					}
 					else//listWalker->appID is greater than treeWalker.appID, so insert new node here
 					{
-						LinkedListNode* parent = gamesDynamicListFront;
+						LinkListNode* parent = gamesDynamicListFront;
 						while (parent->next->appID < treeWalker->top5->list[i].appID)
 						{
 							parent = parent->next;
 						}
 
-						LinkedListNode* tempNode = new(nothrow) LinkedListNode;
+						LinkListNode* tempNode = new(nothrow) LinkListNode;
 						if (tempNode == NULL)
 						{cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";}
 						else
