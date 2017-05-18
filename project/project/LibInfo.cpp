@@ -69,7 +69,10 @@ string LibInfo::convertSteamID(string &ID_64){
 		uName = src.substr(startCapture, endCapture - startCapture);
 		cout << "username = " << uName << endl;
 	}
-	return uName;
+	if (uName == ID_64)
+		return "unknown username";
+	else
+		return uName;
 }
 
 string LibInfo::getAccountNumber(string &uName){
@@ -217,21 +220,28 @@ void LibInfo::indexFreinds()
 	friends.pop_front();
 }
 
-void LibInfo::findFriends(bool logOutput, string &id)
+void LibInfo::findFriends(bool logOutput)
 {
-	string src;
-	string subURL = "ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=";
-	subURL += getAccountNumber(id);
-	subURL += "&relationship=all&format=xml";
-	wstring widestr = wstring(subURL.begin(), subURL.end());
-	ReadWebPage(src, false, L"api.steampowered.com", widestr.c_str());
-	//http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=76561198054478758&relationship=all&format=xml
-	if (logOutput) {
-		ofstream log("friends.xml");
-		log << src;
-		log.close();
+	int i = 0;
+	while (!friends.empty() && i < MAX_TREE_SIZE) {
+		string src;
+		string subURL = "ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=";
+		subURL += getAccountNumber(friends.front());
+		subURL += "&relationship=all&format=xml";
+		wstring widestr = wstring(subURL.begin(), subURL.end());
+		ReadWebPage(src, false, L"api.steampowered.com", widestr.c_str());
+		//http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=76561198054478758&relationship=all&format=xml
+		if (logOutput) {
+			ofstream log("friends.xml");
+			log << src;
+			log.close();
+		}
+		parseFriendList(logOutput, src);//add current user's ( friends[i] ) friends to vector<string> friends
+		if (stoull(friends.front()) != root->nodeNumber)
+			InsertNode(stoull(friends.front()), convertSteamID(friends.front()), extractGames(false, friends.front()));
+		friends.pop_front();
+		i++;
 	}
-	parseFriendList(logOutput, src);
 }
 
 // This function will extract the games for each friend 

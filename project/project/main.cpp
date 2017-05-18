@@ -19,9 +19,9 @@ int main(int argc, char *argv[])
 		string rootUser = driver->getSteamID();
 		string rootSteamID_64 = driver->getAccountNumber(rootUser);
 		if (rootSteamID_64 != "not found") {
-			GameList* gList = driver->extractGames(false, rootSteamID_64);
-			dynamic_cast<BinaryTree*>(driver)->InsertNode(stoull(rootSteamID_64), rootUser, gList);
-			driver->findFriends(false, rootSteamID_64);
+			dynamic_cast<BinaryTree*>(driver)->InsertNode(stoull(rootSteamID_64), rootUser, driver->extractGames(false, rootSteamID_64));
+			driver->friends.push_back(rootSteamID_64);
+			driver->findFriends(false);
 		}
 		else {
 			cout << "ERROR\n could not resolve username to 64 bit version of SteamID.\n";
