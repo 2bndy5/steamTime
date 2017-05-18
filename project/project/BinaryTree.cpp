@@ -318,7 +318,7 @@ void BinaryTree::FreeNodes(treeNode * nodeWalker)
 	}
 
 	return;
-}
+}//end FreeNodes()
 
 /************************************************************************
 * FUNCTION: BinaryTree()
@@ -333,7 +333,7 @@ BinaryTree::BinaryTree()
 	numberOfNodes = 0;
 	root = NULL;
 	return;
-}
+}//end BinaryTree() constructor
 
 /************************************************************************
 * FUNCTION: DestroyTree()
@@ -349,7 +349,7 @@ BinaryTree::~BinaryTree()
 	numberOfNodes = 0;
 	root = NULL;
 	return;
-}
+}//end ~BinaryTree() destructor
 
 /************************************************************************
 * FUNCTION: InOrderDisplay()
@@ -404,7 +404,7 @@ void BinaryTree::InOrderDisplayCall()
 
 	return;
 
-}
+}//end InOrderDisplay()
 
 /************************************************************************
 * FUNCTION: MostPlayedGame()
@@ -504,11 +504,11 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicL
 				else
 				{
 					//write access violation when listWalker == NULL
-					listWalker->next = tempNode;
 					tempNode->next = NULL;
 					tempNode->appID = treeWalker->top5->list[i].appID;
 					tempNode->playTime = treeWalker->top5->list[i].playTime;
 					tempNode->name = treeWalker->top5->list[i].name;
+					listWalker = tempNode;
 				}
 			}//end if() create a new list from an empty list
 			else//list is not empty... start walking the list
