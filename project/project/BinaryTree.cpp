@@ -17,9 +17,9 @@ treeNode * BinaryTree::findParent(int numberToDelete, treeNode * curr)
 		return curr;
 	else if (curr->rightPointer->nodeNumber == numberToDelete)
 		return curr;
-	else if (numberToDelete > curr->nodeNumber && curr->leftPointer != NULL)
+	else if (numberToDelete > curr->nodeNumber && curr->)
 		return findParent(numberToDelete, curr->leftPointer);
-	else if (numberToDelete < curr->nodeNumber && curr->rightPointer != NULL)
+	else if (numberToDelete < curr->nodeNumber)
 		return findParent(numberToDelete, curr->rightPointer);
 	else return NULL;//invalid input: could not find node
 }
@@ -215,10 +215,6 @@ bool BinaryTree::InsertNode(treeNode * tempPtr)
 	}
 	return success;
 }
-treeNode * BinaryTree::traverseTree(treeNode * curr)
-{
-	return nullptr;
-}
 /************************************************************************
 * FUNCTION: DeleteNode()
 * DESCRIPTION: deletes a node from the binary search tree.
@@ -374,7 +370,7 @@ void BinaryTree::InOrderDisplay(treeNode * nodeWalker, int & i)
 		InOrderDisplay(nodeWalker->rightPointer, i);
 
 	return;
-}
+}//end InOrderDisplay()
 
 /************************************************************************
 * FUNCTION: InOrderDisplayCall()
@@ -409,51 +405,67 @@ void BinaryTree::InOrderDisplayCall()
 * FUNCTION: MostPlayedGame()
 * DESCRIPTION: traverses the tree and counts how much time is spent playing each game.  
 * Game with most hours spent is returned
-* INPUT PARAMETERS: root pointer
+* INPUT PARAMETERS: inherits root (none)
 * OUTPUT: none
-* RETURN VALUE: none
+* RETURN VALUE: GameList * which contains 5 games and 5 playtimes
 *************************************************************************/
-GameList*  BinaryTree::MostPlayedGame()
+GameList* BinaryTree::MostPlayedGame()
 {
 	LinkedListNode* gamesDynamicListFront = NULL;		//Always points to the first element of the list
+	LinkedListNode* temp = NULL;
 	GameList* resultToReturn = NULL;
 	treeNode* treeWalker = root;
 	int linkedListSize = 0, max;
+
 		
 	if (!IsEmpty())						
 	{
 		TraverseTree(treeWalker, gamesDynamicListFront, linkedListSize);	//traverses entire tree, counting games
 	}
 	
-	MergeSort(gamesDynamicListFront)
+	ListNode* unsortedGameList = new ListNode[linkedListSize];
 
-	
+	temp = gamesDynamicListFront;
+	for (int i = 0; i < linkedListSize; i++)
+	{
+		unsortedGameList[i].appID = temp->appID;
+		unsortedGameList[i].name = temp->name;
+		unsortedGameList[i].playTime = temp->playTime;
+		temp = temp->next;
+		if (temp == NULL && i > linkedListSize - 1)
+		{cout << "\nError in the creation of unsortedGameList.  Overflow linked list!\n\n";}
+	}
+
+	MergeSortCall(unsortedGameList, linkedListSize);
+	//unsortedGameList is now a list sorted based on playTime
+
 	if(linkedListSize > MAX_SIZE)
 	{max = MAX_SIZE;}
 	else
 	{max = linkedListSize;}
 
-	for (int i=0; i < max ; i++)
+	for (int i = 0; i < max; i++)
 	{
-		//resultToReturn->list[i].888888888888888888  need to sort list  by playtime before population resultToReturn
+		resultToReturn[i].list->appID = unsortedGameList[i].appID;
+		resultToReturn[i].list->name = unsortedGameList[i].name;
+		resultToReturn[i].list->playTime = unsortedGameList[i].playTime;
 	}
 
-
+	delete[] unsortedGameList;
 	return resultToReturn;
-}
+}//end MostPlayedGame()
 
-//change comment block to suit traverse tree
 /************************************************************************
-* FUNCTION: UserMenuToInputTextFileName()
-* DESCRIPTION: menu for user to imput string file. 
-* INPUT PARAMETERS: blank string for the name of the inputTextFile name.  Does error 
-* checking to see if file exists before return
+* FUNCTION: TraverseTree()
+* DESCRIPTION: recursively traverses the entire tree, building the linked list of games as it 
+*		walks the tree
+* INPUT PARAMETERS: treeWalker pointer, and gamesDynamicList
 * OUTPUT: none
-* RETURN VALUE: none
+* RETURN VALUE: memory allocation validation int.  Zero means all good in the hood
 *************************************************************************/
 void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynamicListFront, int & linkedListSize)
 {//traverses entire tree LRV... Left, Right, then Value
-	
+
 	if (treeWalker->leftPointer != NULL)		//Left first
 	{TraverseTree(treeWalker->leftPointer, gamesDynamicListFront, ++linkedListSize);}
 
@@ -483,9 +495,7 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynami
 			{
 				LinkedListNode* tempNode = new(nothrow) LinkedListNode;
 				if (tempNode == NULL)
-				{
-					cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";
-				}
+				{cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";}
 				else
 				{
 					listWalker->next = tempNode;
@@ -513,9 +523,7 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynami
 						{
 							LinkedListNode* tempNode = new(nothrow) LinkedListNode;
 							if (tempNode == NULL)
-							{
-								cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";
-							}
+							{cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";}
 							else
 							{
 								listWalker->next = tempNode;
@@ -528,7 +536,6 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynami
 					}
 					else//listWalker->appID is greater than treeWalker.appID, so insert new node here
 					{
-
 						LinkedListNode* parent = gamesDynamicListFront;
 						while (parent->next->appID < treeWalker->top5->list[i].appID)
 						{
@@ -537,9 +544,7 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynami
 
 						LinkedListNode* tempNode = new(nothrow) LinkedListNode;
 						if (tempNode == NULL)
-						{
-							cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";
-						}
+						{cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";}
 						else
 						{
 							listWalker->next = tempNode;
@@ -553,8 +558,116 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynami
 			}
 		}
 	}
+		
 	return;
-}
+}//end TraverseTree()
+
+//**********************************************************************************************************************
+// FUNCTION: MergeSortCall()
+// DESCRIPTION: Initializes necessary variables and calls MergeSort().  The purpose of initializig these variables
+// 					here instead of in MergeSort() is that way they are initialized once instead of multiple times 
+//					since MergeSort() is a recursive function, and using function pointers the variables for all of the
+//					functions must be the same. 
+// INPUT PARAMETERS: one unsorted games list array 
+// OUTPUT: none
+// RETURN VALUE: sorted array that it receives from completed MergeSort()
+// IMPLEMENTED BY: Jerome Latona
+//**********************************************************************************************************************
+
+void BinaryTree::MergeSortCall(ListNode * unsortedGameList, int linkedListSize)
+{
+	ListNode * sortedGameList = new ListNode[linkedListSize];	//used as a temp array to help with the merge
+	int	lowIndex = 0,									//low is the first index of the array, used in MergeSort()
+		highIndex =  linkedListSize;					//high is the last index of the array, used in MergeSort()
+
+	MergeSort(lowIndex, highIndex, unsortedGameList, sortedGameList);
+
+	delete[] sortedGameList;
+	return;
+}//end MergeSortCall()
+
+//**********************************************************************************************************************
+// FUNCTION: MergeSort()
+// DESCRIPTION: MergeSort() together with Merge() sort the inputed games array using the merge sort algorithm
+//				MergeSort() halves the array until it is ready to be merged (done by the Merge() function)
+// INPUT PARAMETERS: array, as well as ints representing the low and high indexes
+// OUTPUT: none
+// RETURN VALUE: returns one sorted linked list
+// IMPLEMENTED BY: Jerome Latona
+//**********************************************************************************************************************
+
+void BinaryTree::MergeSort(int lowIndex, int highIndex, ListNode * unsortedGameList, ListNode * sortedGameList)
+{
+	int midIndex;
+
+	if (lowIndex < highIndex)						//if low == high, then the sort is complete
+	{
+		midIndex = (highIndex + lowIndex) / 2;
+		//start going down the rabbit hole of recursion, cutting the array in half each time
+
+		MergeSort(lowIndex, midIndex, unsortedGameList, sortedGameList);
+		MergeSort(midIndex + 1, highIndex, unsortedGameList, sortedGameList);
+		//From this point, we're coming up the rabbit hole of recursion, merging each sorted list along the way.
+		Merge(midIndex, lowIndex, highIndex, unsortedGameList, sortedGameList);
+	}
+
+	return;
+}//end MergeSort()
+
+ //**********************************************************************************************************************
+ // FUNCTION: Merge()
+ // DESCRIPTION: MergeSort() together with Merge() sort the inputed array using the merge sort algorithm
+ //				Merge() will combine two sorted arrays into one sorted array by looking at the first element of each array
+ //					at each step and choosing the smallest one to be put into the new array
+ // INPUT PARAMETERS: two arrays that are already sorted
+ // OUTPUT: none
+ // RETURN VALUE: returns the sorted array
+ // IMPLEMENTED BY: Jerome Latona
+ //**********************************************************************************************************************
+void BinaryTree::Merge(int midIndex, int lowIndex, int highIndex, ListNode * unsortedGameList, ListNode * sortedGameList)
+{
+	//need several int counters for the loops
+	int i = lowIndex,
+		k = lowIndex,
+		j = midIndex+1;
+		
+	while (i <= midIndex && j <= highIndex)
+    {
+        if (unsortedGameList[i].playTime < unsortedGameList[j].playTime)
+        {
+            sortedGameList[k] = unsortedGameList[i];
+            k++;
+            i++;
+        }
+        else
+        {
+            sortedGameList[k] = unsortedGameList[j];
+            k++;
+            j++;
+        }
+    }
+   
+    //these two while loops that follow means that one of the two arrays has reached the end, so the other one 
+	//needs to be truncated to the end of the sorted tempArray and the written into the random number array
+	while (i <= midIndex)	
+    {
+        sortedGameList[k] = unsortedGameList[i];
+        k++;
+        i++;
+    }
+    
+	while (j <= highIndex)
+    {
+        sortedGameList[k] = unsortedGameList[j];
+        k++;
+        j++;
+    }
+    
+	for (i = lowIndex; i < k; i++)//overwrite the unsortedGameList with the sortedGameList
+    {unsortedGameList[i] = sortedGameList[i];}
+    
+    return;
+}//end Merge()
 
 /************************************************************************
 * FUNCTION: ReadTextFile()
@@ -562,6 +675,7 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynami
 * INPUT PARAMETERS: string with the name of the text file and root node pointer
 * OUTPUT: none
 * RETURN VALUE: memory allocation validation int.  Zero means all good in the hood
+* IMPLEMENTED BY: Jerome Latona
 *************************************************************************/
 /*
 int ReadTextFile(string inputTextFile, TreeRootStruct & treeRoot)
@@ -617,6 +731,7 @@ int ReadTextFile(string inputTextFile, TreeRootStruct & treeRoot)
 * INPUT PARAMETERS: root pointer
 * OUTPUT: menu to user 
 * RETURN VALUE: none
+* IMPLEMENTED BY: Jerome Latona
 *************************************************************************/
 /*
 void UserMenu2(TreeRootStruct treeRoot)
