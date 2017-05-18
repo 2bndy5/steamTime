@@ -318,7 +318,7 @@ void BinaryTree::FreeNodes(treeNode * nodeWalker)
 	}
 
 	return;
-}
+}//end FreeNodes()
 
 /************************************************************************
 * FUNCTION: BinaryTree()
@@ -333,7 +333,7 @@ BinaryTree::BinaryTree()
 	numberOfNodes = 0;
 	root = NULL;
 	return;
-}
+}//end BinaryTree() constructor
 
 /************************************************************************
 * FUNCTION: DestroyTree()
@@ -349,7 +349,7 @@ BinaryTree::~BinaryTree()
 	numberOfNodes = 0;
 	root = NULL;
 	return;
-}
+}//end ~BinaryTree() destructor
 
 /************************************************************************
 * FUNCTION: InOrderDisplay()
@@ -404,7 +404,7 @@ void BinaryTree::InOrderDisplayCall()
 
 	return;
 
-}
+}//end InOrderDisplay()
 
 /************************************************************************
 * FUNCTION: MostPlayedGame()
@@ -418,6 +418,8 @@ GameList* BinaryTree::MostPlayedGame()
 {
 	LinkListNode* gamesDynamicListFront = NULL;		//Always points to the first element of the list
 	LinkListNode* temp = NULL;
+	if (root == NULL)
+	{cout << "\nTree is empty.  No list to build!\n";}
 	GameList* resultToReturn = NULL;
 	treeNode* treeWalker = root;
 	int linkedListSize = 0, max;
@@ -471,6 +473,9 @@ GameList* BinaryTree::MostPlayedGame()
 void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicListFront, int & linkedListSize)
 {//traverses entire tree LRV... Left, Right, then Value
 
+	if(treeWalker == NULL)//tree is empty
+	{cout << "\nTree is empty.  No list to build!\n";}
+
 	if (treeWalker->leftPointer != NULL)		//Left first
 	{TraverseTree(treeWalker->leftPointer, gamesDynamicListFront, ++linkedListSize);}
 
@@ -483,8 +488,7 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicL
 
 	//if(gamesDynamicListFront == NULL)		//List is empty
 	//{listWalker = gamesDynamicListFront;}
-	
-	
+		
 	//Will traverse list & compare/insert by gameApp number ordering
 	for (int i = 0; i < MAX_SIZE; i++)
 	{
@@ -503,16 +507,31 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicL
 				{cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";}
 				else
 				{
-					//write access violation when listWalker == NULL
-					listWalker->next = tempNode;
 					tempNode->next = NULL;
 					tempNode->appID = treeWalker->top5->list[i].appID;
 					tempNode->playTime = treeWalker->top5->list[i].playTime;
 					tempNode->name = treeWalker->top5->list[i].name;
+					listWalker = tempNode;
+					gamesDynamicListFront = tempNode;
 				}
 			}//end if() create a new list from an empty list
 			else//list is not empty... start walking the list
 			{
+				if (gamesDynamicListFront->appID > listWalker->appID)//edge case insert game at front of list
+				{
+					LinkListNode* tempNode = new(nothrow) LinkListNode;
+					if (tempNode == NULL)
+					{cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";}
+					else
+					{
+						tempNode->next = gamesDynamicListFront;
+						tempNode->appID = treeWalker->top5->list[i].appID;
+						tempNode->playTime = treeWalker->top5->list[i].playTime;
+						tempNode->name = treeWalker->top5->list[i].name;
+						gamesDynamicListFront = tempNode;
+					}
+				}
+				
 				while (listWalker->next != NULL)
 				{
 					if (treeWalker->top5->list[i].appID == listWalker->appID)//games match, now add the times

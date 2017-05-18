@@ -71,7 +71,7 @@ string LibInfo::convertSteamID(string &ID_64){
 		uName = src.substr(startCapture, endCapture - startCapture);
 		cout << "username = " << uName << endl;
 	}
-	if (src.find("This profile is private") < src.length())
+	if (src.find("private") < src.length())
 		isPrivate = true;
 	else isPrivate = false;
 	if (uName == ID_64)
