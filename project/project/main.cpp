@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 			driver->findFriends(false);
 			GameList* gList = bt->MostPlayedGame();
 			cout << "Top 5 Most played games out of ";
-			cout << MAX_TREE_SIZE << " users:" << endl;
+			cout << bt->getSize() << " users:" << endl;
 			gList->print();
 		}
 		else {

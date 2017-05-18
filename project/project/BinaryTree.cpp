@@ -39,6 +39,11 @@ bool BinaryTree::IsEmpty()
 		return false;
 }
 
+int BinaryTree::getSize()
+{
+	return numberOfNodes;
+}
+
 /************************************************************************
 * FUNCTION: FindNode()
 * DESCRIPTION: //searches for a value within a binary search tree. Passes back a flag 
