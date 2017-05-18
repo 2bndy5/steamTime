@@ -42,7 +42,9 @@ error:
 	return bResults;
 }
 
-LibInfo::LibInfo(){}
+LibInfo::LibInfo(){
+	isPrivate = false;
+}
 
 string LibInfo::getSteamID()
 {
@@ -69,6 +71,9 @@ string LibInfo::convertSteamID(string &ID_64){
 		uName = src.substr(startCapture, endCapture - startCapture);
 		cout << "username = " << uName << endl;
 	}
+	if (src.find("This profile is private") < src.length())
+		isPrivate = true;
+	else isPrivate = false;
 	if (uName == ID_64)
 		return "unknown username";
 	else
@@ -165,7 +170,7 @@ GameList* LibInfo::extractGames(bool logOutput, string &id)
 	wstring widestr = wstring(subURL.begin(), subURL.end());
 	ReadWebPage(src, false, L"api.steampowered.com", widestr.c_str());
 	//http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=76561198054478758&format=csv
-	unsigned int gameCount = stoul(src.substr(src.find("game_count") + 12, src.find(",") - src.find("game_count")));
+	int gameCount = stoi(src.substr(src.find("game_count") + 12, src.find(",") - src.find("game_count")));
 	if (logOutput){
 		ofstream log("games.csv");
 		log << src;
@@ -183,9 +188,9 @@ GameList* LibInfo::extractGames(bool logOutput, string &id)
 	for (size_t i = 0; i < src.length(); i++) {
 		if (src.find("appid", i) >= src.length())
 			break;
-		unsigned int appid = stoul(src.substr(src.find("appid", i) + 8, src.find(",", src.find("appid", i)) - src.find("appid", i) - 8));
+		int appid = stoi(src.substr(src.find("appid", i) + 8, src.find(",", src.find("appid", i)) - src.find("appid", i) - 8));
 		string gameTitle = src.substr(src.find("name", i) + 8, src.find("\",", i) - src.find("name", i) - 8);
-		unsigned int appTime = stoul(src.substr(src.find("playtime_forever", i) + 19, src.find("\",", i) - src.find("playtime_forever", i) - 19));
+		unsigned long appTime = stoul(src.substr(src.find("playtime_forever", i) + 19, src.find("\",", i) - src.find("playtime_forever", i) - 19));
 		//totalPlaytime += appTime;
 		if (logOutput)
 			fout << appid << " = " << gameTitle << " (" << appTime << " minutes)" << endl;
@@ -236,8 +241,8 @@ void LibInfo::findFriends(bool logOutput)
 			log << src;
 			log.close();
 		}
-		parseFriendList(logOutput, src);//add current user's ( friends[i] ) friends to vector<string> friends
-		if (stoull(friends.front()) != root->nodeNumber)
+		parseFriendList(logOutput, src);//add current user's ( friends.front() ) friends to vector<string> friends
+		if (stoull(friends.front()) != root->nodeNumber && !isPrivate)
 			InsertNode(stoull(friends.front()), convertSteamID(friends.front()), extractGames(false, friends.front()));
 		friends.pop_front();
 		i++;

@@ -20,8 +20,9 @@ private:
 	BOOL ReadWebPage(string &source, bool secure, const wchar_t *url, const wchar_t *verb);// source from http://stackoverflow.com/a/29552504
 	string convertSteamID(string &);// for converting steam ID_64 to steam username
 	void parseFriendList(bool logOutput, string &src);//findFriends() helper function to handle each friend's games individually
+	bool isPrivate;
 public:
-	explicit LibInfo();//empty constructor
+	explicit LibInfo();//set isPrivate to false
 	deque<string> friends;
 	string getSteamID();//get string from cin and return as steam username 
 	string getAccountNumber(string &uName);//user profile must have a custom URL set to user's steam ID for this to work correctly
