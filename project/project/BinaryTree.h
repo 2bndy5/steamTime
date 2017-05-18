@@ -19,7 +19,7 @@ struct treeNode
 {
 	treeNode* leftPointer = NULL;
 	treeNode* rightPointer = NULL;
-	int nodeNumber;
+	unsigned long long nodeNumber;
 	string steamUser;
 	GameList* top5;//seperate class holds most played games
 };
@@ -29,26 +29,26 @@ class BinaryTree
 //	friend class LibInfo;//allow LibInfo be driver for tree growth
 protected:
 	treeNode* root;
-	treeNode* findParent(int numberToDelete, treeNode* root);//delete node helper function
+	treeNode* findParent(unsigned long long numberToDelete, treeNode* root);//delete node helper function
 	bool InsertNode(treeNode* tempPtr);//overload to redistribute excess node after deletion
 	int numberOfNodes;
-	treeNode* traverseTree(treeNode* curr);
 public:
 	BinaryTree();//creates a pointer to the root of the tree and a counter for number of nodes in tree
 	~BinaryTree();// de-allocates all dynamic memory allocated for the binary search tree.
 	bool IsEmpty();//returns true if binary search tree is empty, false otherwise
-	bool InsertNode(int id_64, string uName, GameList* gList); // inserts a new node into the correct location within a binary search tree.
-	bool FindNode(int numberToFind);//finds a node, or NULL if tree is empty, or would-be parent node if node doesn't exist
-	treeNode* CreateNode(int numberToPlace, string steamID, GameList* topFive);// allocate and fills new node. Passes back pointer to new node, or NULL if node could not be allocated.
-	void DeleteNode(int numberToDelete);// deletes a node from the binary search tree.
+	int getSize();//return number of nodes
+	bool InsertNode(unsigned long long id_64, string uName, GameList* gList); // inserts a new node into the correct location within a binary search tree.
+	bool FindNode(unsigned long long numberToFind);//finds a node, or NULL if tree is empty, or would-be parent node if node doesn't exist
+	treeNode* CreateNode(unsigned long long numberToPlace, string steamID, GameList* topFive);// allocate and fills new node. Passes back pointer to new node, or NULL if node could not be allocated.
+	void DeleteNode(unsigned long long numberToDelete);// deletes a node from the binary search tree.
 	void FreeNodes(treeNode* nodeWalker);// recursively de-allocates all dynamic memory allocated to nodes in the binary search tree.
 	void InOrderDisplay(treeNode* nodeWalker, int &i);// neatly displays all integers in the list in sorted order, using a recursive, in-order traversal.
 	void InOrderDisplayCall();//calls InOrderDisplay if necessary
 	GameList* MostPlayedGame();
-	void TraverseTree(treeNode * treeWalker, LinkedListNode* gamesDynamicListFront, int & linkedListSize);
+	void TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicListFront, int & linkedListSize);
 	void MergeSortCall(ListNode * unsortedGameList, int linkedListSize);
 	void MergeSort(int lowIndex, int highIndex, ListNode * unsortedGameList, ListNode * sortedGameList);
-	void Merge(int midIndex, int lowIndex, int highIndex, ListNode * unsortedGameList, ListNode * sortedGameList)
+	void Merge(int midIndex, int lowIndex, int highIndex, ListNode * unsortedGameList, ListNode * sortedGameList);
 
 };
 /*

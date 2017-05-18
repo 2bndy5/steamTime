@@ -12,8 +12,8 @@ using std::string;
 
 struct ListNode {
 	string name;
-	unsigned int appID;
-	unsigned int playTime;
+	int appID;
+	unsigned long playTime;
 };
 
 struct LinkListNode :public ListNode

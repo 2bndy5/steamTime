@@ -4,3 +4,10 @@ project/.vs/project/v15/.suo
 project/.vs/project/v15/.suo
 project/.vs/project/v15/.suo
 *.db
+*.ipch
+project/.vs/project/v15/ipch/AutoPCH/PROJECT-f52d0bf8/MAIN-efbeae3d/MAIN.ipch
+project/.vs/project/v15/ipch/AutoPCH/PROJECT-f52d0bf8/LIBINFO-92f471bb/LIBINFO.ipch
+project/.vs/project/v15/.suo
+*.suo
+*.ipch
+*.obj
