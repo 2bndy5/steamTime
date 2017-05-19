@@ -11,3 +11,5 @@ project/.vs/project/v15/.suo
 *.suo
 *.ipch
 *.obj
+*.ilk
+project/x64/Debug/project.ilk

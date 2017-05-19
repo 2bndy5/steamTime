@@ -22,6 +22,13 @@ void GameList::print()
 	}
 }
 
+/************************************************************************
+* FUNCTION: addNode()
+* DESCRIPTION: uses insertion sort to build array
+* INPUT PARAMETERS: treeWalker pointer, and gamesDynamicList
+* OUTPUT: none
+* RETURN VALUE: memory allocation validation int.  Zero means all good in the hood
+*************************************************************************/
 void GameList::addNode(string n, unsigned int id, unsigned int t)
 {
 	ListNode temp;
