@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 			driver->friends.push_back(rootSteamID_64);
 			driver->findFriends();
 			GameList* gList = bt->MostPlayedGame();
-			cout << "Top 5 Most played games out of ";
+			cout << "\n\nTop 5 Most played games out of ";
 			cout << bt->getSize() << " users:" << endl;
 			gList->print();
 		}
@@ -32,5 +32,7 @@ int main(int argc, char *argv[])
 			cout << "Make sure you have \"custom URL\" set to your username in steam profile settings!" << endl;
 		}
 	}
+	cout << endl << endl;
+	system("PAUSE");
 	return 0;
 }

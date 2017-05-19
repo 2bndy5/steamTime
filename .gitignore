@@ -13,3 +13,7 @@ project/.vs/project/v15/.suo
 *.obj
 *.ilk
 project/x64/Debug/project.ilk
+*.obj
+project/project/x64/Debug/LibInfo.obj
+*.obj
+*.idb
