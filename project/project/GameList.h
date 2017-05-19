@@ -10,8 +10,8 @@ private:
 public:
 	GameList();
 	~GameList();
-	void print();
-	void addNode(string, unsigned int, unsigned int);
+	void print();//print elements of array "list"
+	void addNode(string, unsigned int, unsigned int);//using insertion sort
 	ListNode list[MAX_SIZE];
 };
 
