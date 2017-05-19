@@ -1,8 +1,9 @@
-﻿  main.cpp
+﻿  BinaryTree.cpp
+  Generating Code...
+  Compiling...
+  main.cpp
   LibInfo.cpp
   GameList.cpp
-  BinaryTree.cpp
   Generating Code...
-  LINK : C:\Users\ytreh\Documents\GitHub\steamTime\project\x64\Debug\project.exe not found or not built by the last incremental link; performing full link
   project.vcxproj -> C:\Users\ytreh\Documents\GitHub\steamTime\project\x64\Debug\project.exe
   project.vcxproj -> C:\Users\ytreh\Documents\GitHub\steamTime\project\x64\Debug\project.pdb (Full PDB)

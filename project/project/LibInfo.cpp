@@ -42,9 +42,7 @@ error:
 	return bResults;
 }
 
-LibInfo::LibInfo(){
-	isPrivate = false;
-}
+LibInfo::LibInfo(){}
 
 string LibInfo::getSteamID()
 {
@@ -56,28 +54,23 @@ string LibInfo::getSteamID()
 
 string LibInfo::convertSteamID(string &ID_64){
 	string src = "";
-	string subURL = "calculator/";
+	string subURL = "ISteamUser/GetPlayerSummaries/v0002/?key=0B79957AE6E898D001F03E348355324C&format=xml&steamids=";
 	subURL += ID_64;
 	string uName = "not found";
 	//convert string to wide string for casting to const wide char
 	wstring widestr = wstring(subURL.begin(), subURL.end());
 	//false indicates not-secure website (http), true is for secure (https)
-	ReadWebPage(src, true, L"steamdb.info", widestr.c_str());
-	//https://steamdb.info/calculator/76561198054478758
-	if (src.find("Vanity URL") < src.length()) {
-		size_t found = src.find("Vanity URL");
-		size_t startCapture = src.find("to copy\">", found) + 9;
-		size_t endCapture = src.find("</span", startCapture);
+	ReadWebPage(src, false, L"api.steampowered.com", widestr.c_str());
+	//http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=0B79957AE6E898D001F03E348355324C&steamids=76561197960435530
+	string start = "<steamid>" + ID_64;
+	if (src.find(start) < src.length()) {
+		size_t found = src.find("<personaname>");
+		size_t startCapture = found + 13;
+		size_t endCapture = src.find("</personaname>", startCapture);
 		uName = src.substr(startCapture, endCapture - startCapture);
 		cout << "username = " << uName << endl;
 	}
-	if (src.find("profile is private") < src.length())
-		isPrivate = true;
-	else isPrivate = false;
-	if (uName == ID_64)
-		return "unknown username";
-	else
-		return uName;
+	return uName;
 }
 
 string LibInfo::getAccountNumber(string &uName){
@@ -95,11 +88,13 @@ string LibInfo::getAccountNumber(string &uName){
 		size_t startCapture = src.find("to copy\">", found) + 9;
 		size_t endCapture = src.find("</span", startCapture);
 		id_64 = src.substr(startCapture, endCapture - startCapture);
-		cout << "id_64 = " << id_64 << endl;
+		cout << "\nid_64 = " << id_64 << endl;
+		return id_64;
 	}
-	else
+	else {
 		cout << uName << " doesn't exist or doesn't have custom url set to " << uName << " in profile settings." << endl;
-	return id_64;
+		return "76561198054478758";//return 64 bit id for my profile ( 2bndy5 )
+	}
 }
 
 void LibInfo::extractAllApps(string &uName, bool logOutput)
@@ -127,11 +122,7 @@ void LibInfo::extractAllApps(string &uName, bool logOutput)
 			if (timeInfo < nextGame && timeInfo < src.length())
 				appTime = src.substr(src.find("hours_forever\":\"", i) + 16, src.find("\",", src.find("hours_forever\":\"", i)) - src.find("hours_forever\":\"", i) - 16);
 
-			//remove special characters like TM(superscript) and (R)
-			while (appName.find("\\u00ae") < appName.length())
-				appName.erase(appName.find("\\u00ae"), 6);
-			while (appName.find("\\u2122") < appName.length())
-				appName.erase(appName.find("\\u2122"), 6);
+			removeSpecialChars(appName);
 
 			i = src.find("},{", i);
 			cout << setw(6) << appID << " = " << appName;
@@ -160,7 +151,7 @@ void LibInfo::extractAllApps(string &uName, bool logOutput)
 		cout << uName << " doesn't exist or doesn't have custom url set to " << uName << " in profile settings." << endl;
  }
 
-GameList* LibInfo::extractGames(bool logOutput, string &id)
+GameList* LibInfo::extractGames(string &id)
 {
 	string src;
 	//Web API key = 0B79957AE6E898D001F03E348355324C
@@ -170,65 +161,35 @@ GameList* LibInfo::extractGames(bool logOutput, string &id)
 	wstring widestr = wstring(subURL.begin(), subURL.end());
 	ReadWebPage(src, false, L"api.steampowered.com", widestr.c_str());
 	//http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=76561198054478758&format=csv
-	int gameCount = stoi(src.substr(src.find("game_count") + 12, src.find(",") - src.find("game_count")));
-	if (logOutput){
-		ofstream log("games.csv");
-		log << src;
-		log.close();
-	}
-	ofstream fout; 
-	if (logOutput)
-		fout.open("Library List.txt");
-
-
 	//start parsing results
-	//unsigned int totalPlaytime = 0;
-	//unsigned int gamesPlayed = 0;
+	if (src.find("game_count") < src.length()) {
+		int gameCount = stoi(src.substr(src.find("game_count") + 12, src.find(",") - src.find("game_count")));
+		cout << "Game count = " << gameCount << endl;
+	}
+	else
+		return NULL;// profile is private, so nothing to do
 	GameList* games = new GameList;
 	for (size_t i = 0; i < src.length(); i++) {
 		if (src.find("appid", i) >= src.length())
 			break;
 		int appid = stoi(src.substr(src.find("appid", i) + 8, src.find(",", src.find("appid", i)) - src.find("appid", i) - 8));
 		string gameTitle = src.substr(src.find("name", i) + 8, src.find("\",", i) - src.find("name", i) - 8);
+		removeSpecialChars(gameTitle);
 		unsigned long appTime = stoul(src.substr(src.find("playtime_forever", i) + 19, src.find("\",", i) - src.find("playtime_forever", i) - 19));
-		//totalPlaytime += appTime;
-		if (logOutput)
-			fout << appid << " = " << gameTitle << " (" << appTime << " minutes)" << endl;
+		//display all games
 		if (appTime > 0) {
-			cout << appid << " = " << gameTitle << " (" << appTime << " minutes)" << endl;
+		//	cout << appid << " = " << gameTitle << " (" << appTime << " minutes)" << endl;
 			games->addNode(gameTitle, appid, appTime);
-		//	gamesPlayed++;
 		}
 		i = src.find("}", i);
 	}
-	if (logOutput) {
-		fout << "Game count = " << gameCount << endl;
-		//fout << "Games played = " << gamesPlayed << endl;
-		//fout << "Total time spent playing = " << totalPlaytime << " minutes" << endl;
-		fout.close();
-	}
-	cout << "Game count = " << gameCount << endl;
-	//cout << "Games played = " << gamesPlayed << endl;
-	//cout << "Total time spent playing = " << totalPlaytime << " minutes" << endl;
-
+	games->print();//display top 5 played games
 	return games;
 }
 
-void LibInfo::indexFreinds()
+void LibInfo::findFriends()
 {
-	string friendID_64 = friends.front();
-	string friendUsername = convertSteamID(friendID_64);
-	if (numberOfNodes < MAX_TREE_SIZE) // Once max size is reached it will stop inserting nodes
-	{
-		InsertNode(stoull(friendID_64), friendUsername, extractGames(false, friendID_64)); // needs to be true to run its own if statement in the following iteration
-	}
-	friends.pop_front();
-}
-
-void LibInfo::findFriends(bool logOutput)
-{
-	int i = 0;
-	while (!friends.empty() && i < MAX_TREE_SIZE) {
+	while (!friends.empty() && numberOfNodes <= MAX_TREE_SIZE) {
 		string src;
 		string subURL = "ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=";
 		subURL += getAccountNumber(friends.front());
@@ -236,41 +197,39 @@ void LibInfo::findFriends(bool logOutput)
 		wstring widestr = wstring(subURL.begin(), subURL.end());
 		ReadWebPage(src, false, L"api.steampowered.com", widestr.c_str());
 		//http://api.steampowered.com/ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=76561198054478758&relationship=all&format=xml
-		if (logOutput) {
-			ofstream log("friends.xml");
-			log << src;
-			log.close();
+		parseFriendList(src);//add current user's friends to vector<string> friends
+		unsigned long long id_64 = stoull(friends.front());
+		if (!FindNode(id_64)) {//check for duplicates
+			string steamName = convertSteamID(friends.front());
+			GameList* gList = extractGames(friends.front());
+			//now insert into tree accordingly
+			if (gList != NULL)//if library is visible
+				InsertNode(id_64, steamName, gList);
+			else
+				cout << "Library for " << steamName << " is empty or set to private only." << endl;
 		}
-		parseFriendList(logOutput, src);//add current user's ( friends.front() ) friends to vector<string> friends
-		if (stoull(friends.front()) != root->nodeNumber && !isPrivate)
-			InsertNode(stoull(friends.front()), convertSteamID(friends.front()), extractGames(false, friends.front()));
 		friends.pop_front();
-		i++;
 	}
 }
 
 // This function will extract the games for each friend 
-void LibInfo::parseFriendList(bool logOutput, string &src)
+void LibInfo::parseFriendList(string &src)
 {
-	ofstream fout;
-	if (logOutput)
-		fout.open("Friends Parsed.txt", ios::app);
-
 	for (size_t i = 0; i < src.length(); i++) 
   	{
 		if (src.find("</steamid>", i) >= src.length())
 			break;
-		
 		string friendID_64 = src.substr(src.find("<steamid>", i) + 9, src.find("</steamid>", i) - src.find("<steamid>", i) - 9);
-		
 		friends.push_back(friendID_64);
 		i = src.find("</steamid>", i);
 	}
-	// Output the size of the tree - 1 because not counting root
-	if (logOutput) { 
-		fout << "Friends found = " << numberOfNodes - 1 << endl;
-		fout.close();
-	}
-	else cout << "Friends found = " << numberOfNodes -1 << endl;
+}
+
+void LibInfo::removeSpecialChars(string &str)
+{
+	while (str.find("\\u00ae") < str.length())
+		str.erase(str.find("\\u00ae"), 6);
+	while (str.find("\\u2122") < str.length())
+		str.erase(str.find("\\u2122"), 6);
 }
 

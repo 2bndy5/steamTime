@@ -67,8 +67,10 @@ bool BinaryTree::FindNode(unsigned long long numberToFind)
 	while (!found && !notInTree)
 	{
 
-		if (nodeFinder->nodeNumber == numberToFind)
+		if (nodeFinder->nodeNumber == numberToFind) {
 			found = true;
+			cout << numberToFind << " is already in tree!" << endl;
+		}
 		else if (nodeFinder->nodeNumber > numberToFind)
 		{
 			if (nodeFinder->leftPointer != NULL)
