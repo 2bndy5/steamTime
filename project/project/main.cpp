@@ -20,7 +20,6 @@ int main(int argc, char *argv[])
 		string rootSteamID_64 = driver->getAccountNumber(rootUser);
 		if (rootSteamID_64 != "not found") {
 			BinaryTree* bt = dynamic_cast<BinaryTree*>(driver);
-			bt->InsertNode(stoull(rootSteamID_64), rootUser, driver->extractGames(rootSteamID_64));
 			driver->friends.push_back(rootSteamID_64);
 			driver->findFriends();
 			GameList* gList = bt->MostPlayedGame();

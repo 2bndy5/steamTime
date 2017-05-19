@@ -68,7 +68,7 @@ string LibInfo::convertSteamID(string &ID_64){
 		size_t startCapture = found + 13;
 		size_t endCapture = src.find("</personaname>", startCapture);
 		uName = src.substr(startCapture, endCapture - startCapture);
-		cout << "username = " << uName << endl;
+		cout << "\nusername = " << uName << endl;
 	}
 	return uName;
 }
@@ -88,13 +88,11 @@ string LibInfo::getAccountNumber(string &uName){
 		size_t startCapture = src.find("to copy\">", found) + 9;
 		size_t endCapture = src.find("</span", startCapture);
 		id_64 = src.substr(startCapture, endCapture - startCapture);
-		cout << "\nid_64 = " << id_64 << endl;
-		return id_64;
+		cout << "id_64 = " << id_64 << endl;
 	}
-	else {
+	else
 		cout << uName << " doesn't exist or doesn't have custom url set to " << uName << " in profile settings." << endl;
-		return "76561198054478758";//return 64 bit id for my profile ( 2bndy5 )
-	}
+	return id_64;
 }
 
 void LibInfo::extractAllApps(string &uName, bool logOutput)
@@ -192,7 +190,7 @@ void LibInfo::findFriends()
 	while (!friends.empty() && numberOfNodes <= MAX_TREE_SIZE) {
 		string src;
 		string subURL = "ISteamUser/GetFriendList/v0001/?key=0B79957AE6E898D001F03E348355324C&steamid=";
-		subURL += getAccountNumber(friends.front());
+		subURL +=  friends.front();
 		subURL += "&relationship=all&format=xml";
 		wstring widestr = wstring(subURL.begin(), subURL.end());
 		ReadWebPage(src, false, L"api.steampowered.com", widestr.c_str());
@@ -208,7 +206,10 @@ void LibInfo::findFriends()
 			else
 				cout << "Library for " << steamName << " is empty or set to private only." << endl;
 		}
+		else
+			cout << id_64 << " is already in tree!" << endl;
 		friends.pop_front();
+		cout << "Building Binary Tree.......... " << numberOfNodes / MAX_TREE_SIZE << "% done" << endl;
 	}
 }
 
@@ -220,7 +221,15 @@ void LibInfo::parseFriendList(string &src)
 		if (src.find("</steamid>", i) >= src.length())
 			break;
 		string friendID_64 = src.substr(src.find("<steamid>", i) + 9, src.find("</steamid>", i) - src.find("<steamid>", i) - 9);
-		friends.push_back(friendID_64);
+		bool inQueue = false;
+		for (int j = 0; j < friends.size(); j++) {
+			if (friends[j] == friendID_64) {
+				inQueue = true;
+				break;
+			}
+		}
+		if (!FindNode(stoull(friendID_64)) && !inQueue)
+			friends.push_back(friendID_64);
 		i = src.find("</steamid>", i);
 	}
 }
