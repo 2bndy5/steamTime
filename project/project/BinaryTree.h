@@ -45,10 +45,10 @@ public:
 	void InOrderDisplay(treeNode* nodeWalker, int &i);// neatly displays all integers in the list in sorted order, using a recursive, in-order traversal.
 	void InOrderDisplayCall();//calls InOrderDisplay if necessary
 	GameList* MostPlayedGame();
-	void TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicListFront, int & linkedListSize);
-	void MergeSortCall(ListNode * unsortedGameList, int linkedListSize);
-	void MergeSort(int lowIndex, int highIndex, ListNode * unsortedGameList, ListNode * sortedGameList);
-	void Merge(int midIndex, int lowIndex, int highIndex, ListNode * unsortedGameList, ListNode * sortedGameList);
+	void TraverseTree(treeNode * treeWalker, LinkListNode*& gamesDynamicListFront, int & linkedListSize);
+	void MergeSortCall(ListNode *& unsortedGameList, int linkedListSize);
+	void MergeSort(int lowIndex, int highIndex, ListNode *& unsortedGameList, ListNode *& sortedGameList);
+	void Merge(int midIndex, int lowIndex, int highIndex, ListNode *& unsortedGameList, ListNode *& sortedGameList);
 
 };
 /*

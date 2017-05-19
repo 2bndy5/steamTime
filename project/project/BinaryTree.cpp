@@ -358,6 +358,7 @@ BinaryTree::~BinaryTree()
 * for output
 * OUTPUT: outputs all the BST numbers to screen in order
 * RETURN VALUE: none
+* IMPLEMENTED BY: Jerome Latona
 *************************************************************************/
 void BinaryTree::InOrderDisplay(treeNode * nodeWalker, int & i)
 {
@@ -384,6 +385,7 @@ void BinaryTree::InOrderDisplay(treeNode * nodeWalker, int & i)
 * INPUT PARAMETERS: none
 * OUTPUT: none
 * RETURN VALUE: none
+* IMPLEMENTED BY: Jerome Latona
 *************************************************************************/
 void BinaryTree::InOrderDisplayCall()
 {
@@ -413,6 +415,7 @@ void BinaryTree::InOrderDisplayCall()
 * INPUT PARAMETERS: inherits root (none)
 * OUTPUT: none
 * RETURN VALUE: GameList * which contains 5 games and 5 playtimes
+* IMPLEMENTED BY: Jerome Latona
 *************************************************************************/
 GameList* BinaryTree::MostPlayedGame()
 {
@@ -420,31 +423,38 @@ GameList* BinaryTree::MostPlayedGame()
 	LinkListNode* temp = NULL;
 	if (root == NULL)
 	{cout << "\nTree is empty.  No list to build!\n";}
-	GameList* resultToReturn = NULL;
+	GameList* resultToReturn = new GameList;					//contains garbage for now
 	treeNode* treeWalker = root;
-	int linkedListSize = 0, max;
+	int linkedListSize = 0, max = MAX_TREE_SIZE*5;//max will be reduced when the list is built, but this is the absolute max
 
 		
 	if (!IsEmpty())						
-	{
-		TraverseTree(treeWalker, gamesDynamicListFront, linkedListSize);	//traverses entire tree, counting games
-	}
+	{TraverseTree(treeWalker, gamesDynamicListFront, linkedListSize);}	//traverses entire tree, counting games
+
+	if (gamesDynamicListFront == NULL)
+		cout << "\ngamesDYN is NULL here!\n";
 	
 	ListNode* unsortedGameList = new ListNode[linkedListSize];
 
 	temp = gamesDynamicListFront;
+
+	cout << "\nTotal games & times (minutes):\n\n";
 	for (int i = 0; i < linkedListSize; i++)
 	{
 		unsortedGameList[i].appID = temp->appID;
 		unsortedGameList[i].name = temp->name;
 		unsortedGameList[i].playTime = temp->playTime;
 		temp = temp->next;
-		if (temp == NULL && i > linkedListSize - 1)
-		{cout << "\nError in the creation of unsortedGameList.  Overflow linked list!\n\n";}
+		cout << unsortedGameList[i].name << " " << unsortedGameList[i].playTime << endl;
 	}
 
 	MergeSortCall(unsortedGameList, linkedListSize);
 	//unsortedGameList is now a list sorted based on playTime
+
+	cout << "\n\nTotal games & sorted times (minutes):\n\n";
+	for (int i = 0; i < linkedListSize; i++)
+	{cout << unsortedGameList[i].name << " " << unsortedGameList[i].playTime << endl;}
+
 
 	if(linkedListSize > MAX_SIZE)
 	{max = MAX_SIZE;}
@@ -453,9 +463,9 @@ GameList* BinaryTree::MostPlayedGame()
 
 	for (int i = 0; i < max; i++)
 	{
-		resultToReturn[i].list->appID = unsortedGameList[i].appID;
-		resultToReturn[i].list->name = unsortedGameList[i].name;
-		resultToReturn[i].list->playTime = unsortedGameList[i].playTime;
+		resultToReturn->list[i].appID = unsortedGameList[linkedListSize-1-i].appID;
+		resultToReturn->list[i].name = unsortedGameList[linkedListSize - 1 - i].name;
+		resultToReturn->list[i].playTime = unsortedGameList[linkedListSize - 1 - i].playTime;
 	}
 
 	delete[] unsortedGameList;
@@ -469,18 +479,25 @@ GameList* BinaryTree::MostPlayedGame()
 * INPUT PARAMETERS: treeWalker pointer, and gamesDynamicList
 * OUTPUT: none
 * RETURN VALUE: memory allocation validation int.  Zero means all good in the hood
+* IMPLEMENTED BY: Jerome Latona
 *************************************************************************/
-void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicListFront, int & linkedListSize)
+void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode*& gamesDynamicListFront, int & linkedListSize)
 {//traverses entire tree LRV... Left, Right, then Value
 
-	if(treeWalker == NULL)//tree is empty
+	if (treeWalker == NULL)//tree is empty
 	{cout << "\nTree is empty.  No list to build!\n";}
-
+	
 	if (treeWalker->leftPointer != NULL)		//Left first
-	{TraverseTree(treeWalker->leftPointer, gamesDynamicListFront, ++linkedListSize);}
+	{
+		//cout << "\nGoing down left leg.";
+		TraverseTree(treeWalker->leftPointer, gamesDynamicListFront, linkedListSize);
+	}
 
 	if (treeWalker->rightPointer != NULL)		//Right second
-	{TraverseTree(treeWalker->rightPointer, gamesDynamicListFront, ++linkedListSize);}
+	{
+		//cout << "\nGoing down right leg.";
+		TraverseTree(treeWalker->rightPointer, gamesDynamicListFront, linkedListSize);
+	}
 	
 	//at this point in the code, you are at a leaf node, or both left and right legs have been traversed
 	//LRV .... LR are done, now for V
@@ -496,7 +513,7 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicL
 
 		if (treeWalker->top5->list[i].name == "NULL")//no game in this slot
 		{
-			i = MAX_SIZE;
+			i = MAX_SIZE+1;
 		}// end the loop because tree node contains no more games
 		else
 		{
@@ -512,12 +529,16 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicL
 					tempNode->playTime = treeWalker->top5->list[i].playTime;
 					tempNode->name = treeWalker->top5->list[i].name;
 					listWalker = tempNode;
+					linkedListSize++;
 					gamesDynamicListFront = tempNode;
+					cout << endl << gamesDynamicListFront->appID << " "  
+						 << gamesDynamicListFront->name << " has been added to the front of the empty list.";
+					listWalker = NULL;
 				}
 			}//end if() create a new list from an empty list
 			else//list is not empty... start walking the list
 			{
-				if (gamesDynamicListFront->appID > listWalker->appID)//edge case insert game at front of list
+				if (gamesDynamicListFront->appID > treeWalker->top5->list[i].appID)//edge case insert game at front of list
 				{
 					LinkListNode* tempNode = new(nothrow) LinkListNode;
 					if (tempNode == NULL)
@@ -528,23 +549,32 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicL
 						tempNode->appID = treeWalker->top5->list[i].appID;
 						tempNode->playTime = treeWalker->top5->list[i].playTime;
 						tempNode->name = treeWalker->top5->list[i].name;
+						linkedListSize++;
 						gamesDynamicListFront = tempNode;
+						cout << endl << gamesDynamicListFront->appID << " "
+							 << gamesDynamicListFront->name << " has been added to the front of the list.";
+						listWalker = NULL;
 					}
 				}
 				
-				while (listWalker->next != NULL)
+				while (listWalker != NULL)
 				{
 					if (treeWalker->top5->list[i].appID == listWalker->appID)//games match, now add the times
 					{
 						listWalker->playTime += treeWalker->top5->list[i].playTime;
+						listWalker = NULL;
 					}
-					else if (listWalker->appID < treeWalker->top5->list[i].appID)
+					else if (treeWalker->top5->list[i].appID > listWalker->appID)
 					{
 						if (listWalker->next != NULL)
+						{listWalker = listWalker->next;}
+						
+						if (treeWalker->top5->list[i].appID == listWalker->appID)//games match, now add the times
 						{
-							listWalker = listWalker->next;
+							listWalker->playTime += treeWalker->top5->list[i].playTime;
+							listWalker = NULL;
 						}
-						else//reached end of list, insert new node at end of list
+						else if(listWalker->next == NULL)//reached end of list, insert new node at end of list
 						{
 							LinkListNode* tempNode = new(nothrow) LinkListNode;
 							if (tempNode == NULL)
@@ -556,34 +586,40 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicL
 								tempNode->appID = treeWalker->top5->list[i].appID;
 								tempNode->playTime = treeWalker->top5->list[i].playTime;
 								tempNode->name = treeWalker->top5->list[i].name;
+								cout << endl << tempNode->appID << " "
+									 << tempNode->name << " has been added to the end of the list.";
+								linkedListSize++;
+								listWalker = NULL;
 							}
 						}
 					}
-					else//listWalker->appID is greater than treeWalker.appID, so insert new node here
+					else if(treeWalker->top5->list[i].appID < listWalker->appID )//insert new node here
 					{
 						LinkListNode* parent = gamesDynamicListFront;
 						while (parent->next->appID < treeWalker->top5->list[i].appID)
-						{
-							parent = parent->next;
-						}
+						{parent = parent->next;}
 
 						LinkListNode* tempNode = new(nothrow) LinkListNode;
 						if (tempNode == NULL)
 						{cout << "\nError in dynamic memory allocation in TraverseTree(), with list size " << linkedListSize << "!\n";}
 						else
 						{
-							listWalker->next = tempNode;
-							tempNode->next = NULL;
+							tempNode->next = listWalker;
+							parent->next = tempNode;
 							tempNode->appID = treeWalker->top5->list[i].appID;
 							tempNode->playTime = treeWalker->top5->list[i].playTime;
 							tempNode->name = treeWalker->top5->list[i].name;
+							cout << endl << tempNode->appID << " "
+								 << tempNode->name << " has been added to the list.";
+							linkedListSize++;
+							listWalker = NULL;
 						}
 					}
 				}//end while(listWalker->next !=NULL)
 			}
 		}
 	}
-		
+	
 	return;
 }//end TraverseTree()
 
@@ -599,11 +635,11 @@ void BinaryTree::TraverseTree(treeNode * treeWalker, LinkListNode* gamesDynamicL
 // IMPLEMENTED BY: Jerome Latona
 //**********************************************************************************************************************
 
-void BinaryTree::MergeSortCall(ListNode * unsortedGameList, int linkedListSize)
+void BinaryTree::MergeSortCall(ListNode *& unsortedGameList, int linkedListSize)
 {
 	ListNode * sortedGameList = new ListNode[linkedListSize];	//used as a temp array to help with the merge
 	int	lowIndex = 0,									//low is the first index of the array, used in MergeSort()
-		highIndex =  linkedListSize;					//high is the last index of the array, used in MergeSort()
+		highIndex =  linkedListSize-1;					//high is the last index of the array, used in MergeSort()
 
 	MergeSort(lowIndex, highIndex, unsortedGameList, sortedGameList);
 
@@ -621,7 +657,7 @@ void BinaryTree::MergeSortCall(ListNode * unsortedGameList, int linkedListSize)
 // IMPLEMENTED BY: Jerome Latona
 //**********************************************************************************************************************
 
-void BinaryTree::MergeSort(int lowIndex, int highIndex, ListNode * unsortedGameList, ListNode * sortedGameList)
+void BinaryTree::MergeSort(int lowIndex, int highIndex, ListNode *& unsortedGameList, ListNode *& sortedGameList)
 {
 	int midIndex;
 
@@ -649,7 +685,7 @@ void BinaryTree::MergeSort(int lowIndex, int highIndex, ListNode * unsortedGameL
  // RETURN VALUE: returns the sorted array
  // IMPLEMENTED BY: Jerome Latona
  //**********************************************************************************************************************
-void BinaryTree::Merge(int midIndex, int lowIndex, int highIndex, ListNode * unsortedGameList, ListNode * sortedGameList)
+void BinaryTree::Merge(int midIndex, int lowIndex, int highIndex, ListNode *& unsortedGameList, ListNode *& sortedGameList)
 {
 	//need several int counters for the loops
 	int i = lowIndex,
