@@ -209,7 +209,7 @@ void LibInfo::findFriends()
 		else
 			cout << id_64 << " is already in tree!" << endl;
 		friends.pop_front();
-		cout << "Building Binary Tree.......... " << numberOfNodes / MAX_TREE_SIZE << "% done" << endl;
+		cout << "Building Binary Tree.......... " << (double)numberOfNodes / MAX_TREE_SIZE * 100 << "% done" << endl;
 	}
 }
 
