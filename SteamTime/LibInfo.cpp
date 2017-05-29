@@ -356,7 +356,7 @@ void LibInfo::parseFriendList(string &src)
 				break;
 			}
 		}// end check for duplicate in queue
-		if (!inQueue)
+		if (!inQueue && friends.size() <= MAX_TREE_SIZE)
 			friends.push_back(new User(stoull(friendID_64)));
 		i = src.find("</steamid>", i);
 	}
