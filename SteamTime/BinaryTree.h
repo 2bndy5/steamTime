@@ -28,8 +28,6 @@ class BinaryTree
 	friend class LibInfo;//allow LibInfo be driver for tree growth
 protected:
 	treeNode* root;
-	treeNode* findParent(unsigned long long numberToDelete, treeNode* root);//delete node helper function
-	bool insertNode(treeNode* tempPtr);//overload to redistribute excess node after deletion
 	void traverseTree(treeNode * treeWalker, LinkListNode*& gamesDynamicListFront, int & linkedListSize);
 	void mergeSortCall(ListNode *& unsortedGameList, int linkedListSize);
 	void mergeSort(int lowIndex, int highIndex, ListNode *& unsortedGameList, ListNode *& sortedGameList);
@@ -43,7 +41,6 @@ public:
 	bool insertNode(User* u, GameList* gList); // inserts a new node into the correct location within a binary search tree.
 	bool findNode(unsigned long long numberToFind);//finds a node, or NULL if tree is empty, or would-be parent node if node doesn't exist
 	treeNode* createNode(User* u, GameList* topFive);// allocate and fills new node. Passes back pointer to new node, or NULL if node could not be allocated.
-	void deleteNode(unsigned long long numberToDelete);// deletes a node from the binary search tree.
 	void freeNodes(treeNode* nodeWalker);// recursively de-allocates all dynamic memory allocated to nodes in the binary search tree.
 	void inOrderDisplay(treeNode* nodeWalker, int &i);// neatly displays all integers in the list in sorted order, using a recursive, in-order traversal.
 	void inOrderDisplayCall();//calls InOrderDisplay if necessary

@@ -1,5 +1,12 @@
 #include "LibInfo.h"
 
+/************************************************************************
+* FUNCTION: ReadWebPage()
+* DESCRIPTION: function to get information from internet and save into "source" string
+* INPUT PARAMETERS: string (by reference) of where to save http request, boolean to specify http (false) or https (true), wide char* of domain, wide char* of http request (everything after ".com" or ".org" etc.)
+* OUTPUT: none
+* RETURN VALUE: window.h typedef of a boolean that returns true only if successful
+*************************************************************************/
 BOOL LibInfo::ReadWebPage(string &source, bool secure, const wchar_t *url, const wchar_t *verb)
 {
 	source = "error";
@@ -42,16 +49,35 @@ error:
 	return bResults;
 }
 
-//constructor set binary tree pointer to empty tree
+/************************************************************************
+* FUNCTION: LibInfo()
+* DESCRIPTION: constructor set binary tree pointer to empty tree
+* INPUT PARAMETERS: none
+* OUTPUT: none
+* RETURN VALUE: N/A
+*************************************************************************/
 LibInfo::LibInfo() {
 	tree = new BinaryTree;
 }
 
-// getter for binary tree pointer
+/************************************************************************
+* FUNCTION: getBT()
+* DESCRIPTION: getter for binary tree object
+* INPUT PARAMETERS: none
+* OUTPUT: none
+* RETURN VALUE: pointer to BinaryTree object
+*************************************************************************/
 BinaryTree* LibInfo::getBT() {
 	return tree;
 }
 
+/************************************************************************
+* FUNCTION: getSteamID()
+* DESCRIPTION: get steam username from console input and return it in a string
+* INPUT PARAMETERS: none
+* OUTPUT: none
+* RETURN VALUE: string of steam username
+*************************************************************************/
 string LibInfo::getSteamID()
 {
 	string id;
@@ -60,6 +86,13 @@ string LibInfo::getSteamID()
 	return id;
 }
 
+/************************************************************************
+* FUNCTION: convertSteamID()
+* DESCRIPTION: helper function to fillQueue2ndaryInfo() to get additional user info like steam username, last logoff, and account creation date
+* INPUT PARAMETERS: string of steam user 64 bit IDs, can contain up to 100 seperated by commas
+* OUTPUT: none
+* RETURN VALUE: none, finds pre-existing User object and saves info accordingly
+*************************************************************************/
 void LibInfo::convertSteamID(string &idList) {
 	string src = "";
 	string subURL = "ISteamUser/GetPlayerSummaries/v0002/?key=0B79957AE6E898D001F03E348355324C&format=xml&steamids=";
@@ -94,6 +127,13 @@ void LibInfo::convertSteamID(string &idList) {
 	}
 }
 
+/************************************************************************
+* FUNCTION: getAccountNumber()
+* DESCRIPTION: Finds and returns 64 bit version of specified user's steam id (requires "custom URL" to set to steam username in steam profile settings)
+* INPUT PARAMETERS: string of steam username
+* OUTPUT: none
+* RETURN VALUE: string of 64 bit steam id
+*************************************************************************/
 string LibInfo::getAccountNumber(string &uName){
 	string src = "";
 	string subURL = "calculator/?player=";
@@ -116,6 +156,14 @@ string LibInfo::getAccountNumber(string &uName){
 	return id_64;
 }
 
+/************************************************************************
+* FUNCTION: extractAllApps()
+* DESCRIPTION: Finds and returns parent node for node with matching
+* attribute that is passed. Uses lookahead idea to peek at children
+* INPUT PARAMETERS: treeNode->user->id_64 and pointer to current parent
+* OUTPUT: none
+* RETURN VALUE: none, outputs to a excel formatted txt file "$username& library.txt"
+*************************************************************************/
 void LibInfo::extractAllApps(string &uName, bool logOutput)
 {
 	string src;
@@ -170,6 +218,13 @@ void LibInfo::extractAllApps(string &uName, bool logOutput)
 		cout << uName << " doesn't exist or doesn't have custom url set to " << uName << " in profile settings." << endl;
  }
 
+/************************************************************************
+* FUNCTION: extractGames()
+* DESCRIPTION: implement steam web API call that returns all owned games for specified user (doesn't return software info)
+* INPUT PARAMETERS: string version of 64 bit steam user id
+* OUTPUT: none
+* RETURN VALUE: GameList object that contains user's top played games
+*************************************************************************/
 GameList* LibInfo::extractGames(string &id)
 {
 	string src;
@@ -206,6 +261,13 @@ GameList* LibInfo::extractGames(string &id)
 	return games;
 }
 
+/************************************************************************
+* FUNCTION: createTree()
+* DESCRIPTION: Creates Binary tree from deque<User*> friends
+* INPUT PARAMETERS: none
+* OUTPUT: none
+* RETURN VALUE: none
+*************************************************************************/
 void LibInfo::createTree()
 {
 	while (!friends.empty()) {
@@ -225,7 +287,13 @@ void LibInfo::createTree()
 	}
 }
 
-// download xml list of friends for each user in deque and pass it to parseFriends function
+/************************************************************************
+* FUNCTION: findFriends()
+* DESCRIPTION: download xml list of friends for each user in deque and pass it to parseFriends helper function
+* INPUT PARAMETERS: none
+* OUTPUT: none
+* RETURN VALUE: none (data saved in deque<User*> friends)
+*************************************************************************/
 void LibInfo::findFriends()
 {
 	unsigned i = 0;
@@ -242,7 +310,13 @@ void LibInfo::findFriends()
 	fillQueue2ndaryInfo();
 }
 
-//get users persona names and last logout time here
+/************************************************************************
+* FUNCTION: fillQueue2ndaryInfo()
+* DESCRIPTION: get users persona names (steam usernames), account creation (UNIX timestamp), and last logout time (UNIX timestamp). adds info to User objects (if it exists)
+* INPUT PARAMETERS: none (uses deque<User*> friends)
+* OUTPUT: none
+* RETURN VALUE: none
+*************************************************************************/
 void LibInfo::fillQueue2ndaryInfo()
 {
 	unsigned i = 1;
@@ -261,7 +335,13 @@ void LibInfo::fillQueue2ndaryInfo()
 	}
 }
 
-// This parses each friend from src string add them into queue provided they aren't already.
+/************************************************************************
+* FUNCTION: parseFriendList()
+* DESCRIPTION: This parses each friend from src string add them into queue provided they aren't already
+* INPUT PARAMETERS: string containing xml version of friends list returned from findFriends
+* OUTPUT: none
+* RETURN VALUE: none
+*************************************************************************/
 void LibInfo::parseFriendList(string &src)
 {
 	for (size_t i = 0; i < src.length(); i++) 
@@ -282,6 +362,13 @@ void LibInfo::parseFriendList(string &src)
 	}
 }
 
+/************************************************************************
+* FUNCTION: removeSpecialChars()
+* DESCRIPTION: Finds and removes characters like (TM) and (R)
+* INPUT PARAMETERS: string to be edited by reference
+* OUTPUT: none
+* RETURN VALUE: altered string saved in arrguments passed
+*************************************************************************/
 void LibInfo::removeSpecialChars(string &str)
 {
 	while (str.find("\\u00ae") < str.length())
@@ -289,4 +376,3 @@ void LibInfo::removeSpecialChars(string &str)
 	while (str.find("\\u2122") < str.length())
 		str.erase(str.find("\\u2122"), 6);
 }
-
