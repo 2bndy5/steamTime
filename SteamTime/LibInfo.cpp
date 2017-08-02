@@ -150,7 +150,6 @@ string LibInfo::getAccountNumber(string &uName){
 		size_t endCapture = src.find("</span", startCapture);
 		id_64 = src.substr(startCapture, endCapture - startCapture);
 		cout << "id_64 = " << id_64 << endl;
-	}
 	else
 		cout << uName << " doesn't exist or doesn't have custom url set to " << uName << " in profile settings." << endl;
 	return id_64;
@@ -178,7 +177,7 @@ void LibInfo::extractAllApps(string &uName, bool logOutput)
 		src = src.substr(src.find("rgGames = [") + 11, src.find("];", src.find("rgGames = [")) - src.find("rgGames = [") - 11);
 		ofstream fout;
 		if (logOutput)
-			fout.open(uName + " Library.txt");
+			fout.open(uName + " Library.csv");
 		int appCount = 0;
 		for (size_t i = 0; i < src.length(); i++) {
 			string appID = src.substr(src.find("appid\":", i) + 7, src.find(",\"", i) - src.find("appid\":", i) - 7);
@@ -189,7 +188,7 @@ void LibInfo::extractAllApps(string &uName, bool logOutput)
 			if (timeInfo < nextGame && timeInfo < src.length())
 				appTime = src.substr(src.find("hours_forever\":\"", i) + 16, src.find("\",", src.find("hours_forever\":\"", i)) - src.find("hours_forever\":\"", i) - 16);
 
-			removeSpecialChars(appName);
+			removeSpecialChars(appName, true);
 
 			i = src.find("},{", i);
 			cout << setw(6) << appID << " = " << appName;
