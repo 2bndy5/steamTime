@@ -369,10 +369,16 @@ void LibInfo::parseFriendList(string &src)
 * OUTPUT: none
 * RETURN VALUE: altered string saved in arrguments passed
 *************************************************************************/
-void LibInfo::removeSpecialChars(string &str)
+void LibInfo::removeSpecialChars(string &str, bool csv)
 {
 	while (str.find("\\u00ae") < str.length())
 		str.erase(str.find("\\u00ae"), 6);
 	while (str.find("\\u2122") < str.length())
 		str.erase(str.find("\\u2122"), 6);
+	if (csv) {// flag to preparestring for excel csv file format
+		while (str.find(",") < str.length())
+			str.erase(str.find(","), 1);
+	}
+	while (str.find("\\/") < str.length())// delete escaping '\'
+		str.erase(str.find("\\"), 1);
 }
