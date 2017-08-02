@@ -1,4 +1,4 @@
-#ifndef LibInfo_H
+, bool csv#ifndef LibInfo_H
 #define LibInfo_H
 #pragma comment(lib, "winhttp.lib")//works only visual studio
 #include <iostream>
@@ -19,7 +19,7 @@ private:
 	BOOL ReadWebPage(string &source, bool secure, const wchar_t *url, const wchar_t *verb);// source from http://stackoverflow.com/a/29552504
 	void convertSteamID(string &ID_64);// for converting steam ID_64 to steam username
 	void parseFriendList(string &src);//findFriends() helper function to handle each friend's games individually
-	void removeSpecialChars(string &str);//remove special characters like TM(superscript) and (R)
+	void removeSpecialChars(string &str, bool csv = false);//remove special characters like TM(superscript) and (R)
 public:
 	explicit LibInfo();//empty constructor
 	deque<User*> friends;
