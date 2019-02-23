@@ -40,7 +40,7 @@ W = Z*2+V+Y
 let W = steamID_64
 let Z = account # for steam account, this is based on account creation date/time
 acount type = indiviual;
-let V = steaID_64 identifier, in our case this is 0x0110000100000000
+let V = steamID_64 identifier, in our case this is 0x0110000100000000
 0x0110000100000000 = 76561197960265728
 let Y = 0 or 1 defined as "part of the account #", but doesn't say which part. this can be determined in the formula as answer cannot have decimals; ( z + 1 ) / 2 !=  W + 0.5
 let X = Account universe, in our case this will be 1 ( for individual )
